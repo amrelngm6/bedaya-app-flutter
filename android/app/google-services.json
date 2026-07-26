@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "480214961207",
+    "project_id": "bedaya-hospitals",
+    "storage_bucket": "bedaya-hospitals.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480214961207:android:4e2c888e0300fd14c2c3b2",
+        "android_client_info": {
+          "package_name": "com.bedaya.appMedians"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAodWekYW3-lqS-3FQ-oOjowFffhnQk78Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

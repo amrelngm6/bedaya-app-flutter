@@ -1,0 +1,352 @@
+[
+  {
+    "test_name": "AMH",
+    "category": "Ovarian Reserve",
+    "unit": "ng/mL",
+    "dangerous_low": 0.1,
+    "avg_low": 1,
+    "avg_high": 4,
+    "dangerous_high": 10,
+    "gender": "Female"
+  },
+  {
+    "test_name": "FSH",
+    "category": "Hormone",
+    "unit": "mIU/mL",
+    "dangerous_low": 1,
+    "avg_low": 3,
+    "avg_high": 10,
+    "dangerous_high": 25,
+    "gender": "Both"
+  },
+  {
+    "test_name": "LH",
+    "category": "Hormone",
+    "unit": "mIU/mL",
+    "dangerous_low": 0.5,
+    "avg_low": 2,
+    "avg_high": 12,
+    "dangerous_high": 40,
+    "gender": "Both"
+  },
+  {
+    "test_name": "Estradiol (E2)",
+    "category": "Hormone",
+    "unit": "pg/mL",
+    "dangerous_low": 10,
+    "avg_low": 30,
+    "avg_high": 400,
+    "dangerous_high": 3000,
+    "gender": "Female"
+  },
+  {
+    "test_name": "Progesterone",
+    "category": "Hormone",
+    "unit": "ng/mL",
+    "dangerous_low": 0.1,
+    "avg_low": 1,
+    "avg_high": 20,
+    "dangerous_high": 60,
+    "gender": "Female"
+  },
+  {
+    "test_name": "Prolactin",
+    "category": "Hormone",
+    "unit": "ng/mL",
+    "dangerous_low": 2,
+    "avg_low": 5,
+    "avg_high": 25,
+    "dangerous_high": 100,
+    "gender": "Both"
+  },
+  {
+    "test_name": "TSH",
+    "category": "Thyroid",
+    "unit": "uIU/mL",
+    "dangerous_low": 0.01,
+    "avg_low": 0.5,
+    "avg_high": 4.5,
+    "dangerous_high": 20,
+    "gender": "Both"
+  },
+  {
+    "test_name": "Free T4",
+    "category": "Thyroid",
+    "unit": "ng/dL",
+    "dangerous_low": 0.3,
+    "avg_low": 0.8,
+    "avg_high": 1.8,
+    "dangerous_high": 4,
+    "gender": "Both"
+  },
+  {
+    "test_name": "Testosterone",
+    "category": "Hormone",
+    "unit": "ng/dL",
+    "dangerous_low": 5,
+    "avg_low": 15,
+    "avg_high": 70,
+    "dangerous_high": 300,
+    "gender": "Female"
+  },
+  {
+    "test_name": "Testosterone",
+    "category": "Hormone",
+    "unit": "ng/dL",
+    "dangerous_low": 50,
+    "avg_low": 300,
+    "avg_high": 1000,
+    "dangerous_high": 2000,
+    "gender": "Male"
+  },
+  {
+    "test_name": "DHEA-S",
+    "category": "Androgen",
+    "unit": "ug/dL",
+    "dangerous_low": 10,
+    "avg_low": 80,
+    "avg_high": 350,
+    "dangerous_high": 800,
+    "gender": "Female"
+  },
+  {
+    "test_name": "Vitamin D",
+    "category": "Vitamin",
+    "unit": "ng/mL",
+    "dangerous_low": 5,
+    "avg_low": 30,
+    "avg_high": 60,
+    "dangerous_high": 150,
+    "gender": "Both"
+  },
+  {
+    "test_name": "HbA1c",
+    "category": "Metabolic",
+    "unit": "%",
+    "dangerous_low": 3.5,
+    "avg_low": 4,
+    "avg_high": 5.6,
+    "dangerous_high": 10,
+    "gender": "Both"
+  },
+  {
+    "test_name": "Fasting Glucose",
+    "category": "Metabolic",
+    "unit": "mg/dL",
+    "dangerous_low": 40,
+    "avg_low": 70,
+    "avg_high": 99,
+    "dangerous_high": 250,
+    "gender": "Both"
+  },
+  {
+    "test_name": "CBC - Hemoglobin",
+    "category": "Blood",
+    "unit": "g/dL",
+    "dangerous_low": 5,
+    "avg_low": 12,
+    "avg_high": 16,
+    "dangerous_high": 22,
+    "gender": "Both"
+  },
+  {
+    "test_name": "HIV",
+    "category": "Infection",
+    "unit": "Index",
+    "dangerous_low": 0,
+    "avg_low": 0,
+    "avg_high": 0.9,
+    "dangerous_high": 1,
+    "gender": "Both"
+  },
+  {
+    "test_name": "HBsAg",
+    "category": "Infection",
+    "unit": "Index",
+    "dangerous_low": 0,
+    "avg_low": 0,
+    "avg_high": 0.9,
+    "dangerous_high": 1,
+    "gender": "Both"
+  },
+  {
+    "test_name": "Anti-HCV",
+    "category": "Infection",
+    "unit": "Index",
+    "dangerous_low": 0,
+    "avg_low": 0,
+    "avg_high": 0.9,
+    "dangerous_high": 1,
+    "gender": "Both"
+  },
+  {
+    "test_name": "CMV IgG",
+    "category": "Infection",
+    "unit": "AU/mL",
+    "dangerous_low": 0,
+    "avg_low": 0,
+    "avg_high": 0.9,
+    "dangerous_high": 10,
+    "gender": "Both"
+  },
+  {
+    "test_name": "ANA",
+    "category": "Immunology",
+    "unit": "Titer",
+    "dangerous_low": 0,
+    "avg_low": 0,
+    "avg_high": 1,
+    "dangerous_high": 5,
+    "gender": "Both"
+  },
+  {
+    "test_name": "Antiphospholipid",
+    "category": "Immunology",
+    "unit": "Units",
+    "dangerous_low": 0,
+    "avg_low": 0,
+    "avg_high": 20,
+    "dangerous_high": 80,
+    "gender": "Both"
+  },
+  {
+    "test_name": "Semen Volume",
+    "category": "Semen",
+    "unit": "mL",
+    "dangerous_low": 0.1,
+    "avg_low": 1.5,
+    "avg_high": 6,
+    "dangerous_high": 15,
+    "gender": "Male"
+  },
+  {
+    "test_name": "Sperm Count",
+    "category": "Semen",
+    "unit": "million/mL",
+    "dangerous_low": 0.1,
+    "avg_low": 15,
+    "avg_high": 200,
+    "dangerous_high": 500,
+    "gender": "Male"
+  },
+  {
+    "test_name": "Motility",
+    "category": "Semen",
+    "unit": "%",
+    "dangerous_low": 1,
+    "avg_low": 40,
+    "avg_high": 100,
+    "dangerous_high": 100,
+    "gender": "Male"
+  },
+  {
+    "test_name": "Morphology",
+    "category": "Semen",
+    "unit": "%",
+    "dangerous_low": 0,
+    "avg_low": 4,
+    "avg_high": 15,
+    "dangerous_high": 50,
+    "gender": "Male"
+  },
+  {
+    "test_name": "DNA Fragmentation",
+    "category": "Semen",
+    "unit": "%",
+    "dangerous_low": 0,
+    "avg_low": 0,
+    "avg_high": 25,
+    "dangerous_high": 60,
+    "gender": "Male"
+  },
+  {
+    "test_name": "Oocytes Retrieved",
+    "category": "Embryology",
+    "unit": "count",
+    "dangerous_low": 0,
+    "avg_low": 5,
+    "avg_high": 20,
+    "dangerous_high": 50,
+    "gender": "Female"
+  },
+  {
+    "test_name": "Fertilization Rate",
+    "category": "Embryology",
+    "unit": "%",
+    "dangerous_low": 0,
+    "avg_low": 60,
+    "avg_high": 100,
+    "dangerous_high": 100,
+    "gender": "Female"
+  },
+  {
+    "test_name": "Blastocyst Grade",
+    "category": "Embryology",
+    "unit": "score",
+    "dangerous_low": 0,
+    "avg_low": 3,
+    "avg_high": 5,
+    "dangerous_high": 6,
+    "gender": "Female"
+  },
+  {
+    "test_name": "Beta-hCG",
+    "category": "Pregnancy",
+    "unit": "mIU/mL",
+    "dangerous_low": 0,
+    "avg_low": 5,
+    "avg_high": 100000,
+    "dangerous_high": 500000,
+    "gender": "Female"
+  },
+  {
+    "test_name": "Endometrial Thickness",
+    "category": "Ultrasound",
+    "unit": "mm",
+    "dangerous_low": 2,
+    "avg_low": 7,
+    "avg_high": 14,
+    "dangerous_high": 25,
+    "gender": "Female"
+  },
+  {
+    "test_name": "Follicle Count",
+    "category": "Ultrasound",
+    "unit": "count",
+    "dangerous_low": 0,
+    "avg_low": 5,
+    "avg_high": 20,
+    "dangerous_high": 50,
+    "gender": "Female"
+  },
+  {
+    "test_name": "Ovarian Volume",
+    "category": "Ultrasound",
+    "unit": "cc",
+    "dangerous_low": 1,
+    "avg_low": 3,
+    "avg_high": 10,
+    "dangerous_high": 25,
+    "gender": "Female"
+  },
+  {
+    "test_name": "ERA Result",
+    "category": "Genetic",
+    "unit": "score",
+    "dangerous_low": 0,
+    "avg_low": 0,
+    "avg_high": 1,
+    "dangerous_high": 2,
+    "gender": "Female"
+  },
+  {
+    "test_name": "PGT-A Euploid Rate",
+    "category": "Genetic",
+    "unit": "%",
+    "dangerous_low": 0,
+    "avg_low": 40,
+    "avg_high": 100,
+    "dangerous_high": 100,
+    "gender": "Female"
+  }
+]

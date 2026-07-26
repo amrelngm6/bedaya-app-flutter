@@ -1,0 +1,81 @@
+import 'package:bedaya2/core/theme/colors.dart';
+import 'package:bedaya2/core/theme/styles.dart';
+import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../pages/ai_chatbot_page.dart';
+
+class AITextBanner extends StatelessWidget {
+  const AITextBanner({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AIChatbotPage(initialTabIndex: 0),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppColors.primaryTeal.withValues(alpha: 0.9),
+              AppColors.darkTeal,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primaryTeal.withValues(alpha: 0.4),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.medication,
+                color: Colors.white,
+                size: 32,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'AI Assistant Doctor'.tr(),
+                    style: AppStyles.h3.copyWith(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Ask our AI assistant to analyze your medical reports'.tr(),
+                    style: AppStyles.bodyMedium.copyWith(color: Colors.white70),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}
