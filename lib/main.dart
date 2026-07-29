@@ -1,5 +1,5 @@
 import 'package:bedaya2/core/models/app_remote_config_model.dart';
-import 'package:bedaya2/presentation/widgets/bottom-menu.dart';
+import 'package:bedaya2/presentation/widgets/main-navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';

@@ -4,7 +4,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bedaya2/core/theme/colors.dart';
 import 'package:bedaya2/core/theme/styles.dart';
-import 'package:bedaya2/presentation/pages/home_page.dart';
+import 'package:bedaya2/presentation/widgets/main-navigation.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -98,7 +98,7 @@ class _OnboardingPageState extends State<OnboardingPage>
     if (mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(builder: (context) => MainNavigationPage()),
       );
     }
   }

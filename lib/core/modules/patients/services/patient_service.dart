@@ -8,6 +8,7 @@ import 'package:bedaya2/core/modules/auth/models/auth_models.dart';
 import 'package:bedaya2/core/modules/patients/models/medical_record_model.dart';
 import 'package:bedaya2/core/modules/patients/models/patient_medication.dart';
 import 'package:bedaya2/core/modules/patients/models/patient_medication_report.dart';
+import 'package:dio/dio.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Patient Service
@@ -23,6 +24,16 @@ class PatientService extends BaseApiService {
     );
     return UserModel.fromJson(_dataOf(response.data!));
   });
+
+  // ─── Update Picture ─────────────────────────────────────────────────────
+  Future<NetworkResult<String>> updateProfilePicture(FormData formData) =>
+      execute(() async {
+        final response = await dio.post<Map<String, dynamic>>(
+          ApiEndpoints.updateAvatar,
+          data: formData,
+        );
+        return response.data!['url'] ?? response.data as String;
+      });
 
   // ─── Medical Records ──────────────────────────────────────────────────────
 

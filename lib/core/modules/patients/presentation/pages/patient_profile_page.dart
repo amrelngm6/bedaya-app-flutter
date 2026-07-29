@@ -1,7 +1,9 @@
 // import 'package:bedaya2/core/models/auth_models.dart';
 import 'package:bedaya2/core/modules/auth/models/patient_model.dart';
+import 'package:bedaya2/core/modules/patients/services/image-service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../theme/colors.dart';
 import '../../../../theme/styles.dart';
 
@@ -103,34 +105,38 @@ class _PatientProfilePageState extends State<PatientProfilePage>
               children: [
                 const SizedBox(height: 60),
                 // Profile Image
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 4),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.white,
-                    backgroundImage: widget.patient.avatar != null
-                        ? NetworkImage(widget.patient.avatar!)
-                        : null,
-                    child: widget.patient.avatar == null
-                        ? Text(
-                            widget.patient.firstName[0].toUpperCase() +
-                                widget.patient.lastName[0].toUpperCase(),
-                            style: AppStyles.h1.copyWith(
-                              fontSize: 40,
-                              color: AppColors.primaryTeal,
-                            ),
-                          )
-                        : null,
+                GestureDetector(
+                  onTap:
+                      changeProfilePicture, // Function to change profile picture
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 4),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.white,
+                      backgroundImage: widget.patient.avatar != null
+                          ? NetworkImage(widget.patient.avatar!)
+                          : null,
+                      child: widget.patient.avatar == null
+                          ? Text(
+                              widget.patient.firstName[0].toUpperCase() +
+                                  widget.patient.lastName[0].toUpperCase(),
+                              style: AppStyles.h1.copyWith(
+                                fontSize: 40,
+                                color: AppColors.primaryTeal,
+                              ),
+                            )
+                          : null,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -315,6 +321,27 @@ class _PatientProfilePageState extends State<PatientProfilePage>
         ),
       ],
     );
+  }
+
+  void changeProfilePicture() {
+    // Pick an image from gallery or camera, then upload and update the profile picture.
+    pickAndUpload(ImageSource.gallery); // For example, picking from gallery
+  }
+
+  Future<void> pickAndUpload(ImageSource source) async {
+    final imageService = ImageService();
+
+    final image = await imageService.pickImage(source);
+
+    if (image == null) return;
+
+    final url = await imageService.uploadImage(image);
+
+    if (url != null) {
+      print("Uploaded: $url");
+    } else {
+      print("Upload failed");
+    }
   }
 
   /*

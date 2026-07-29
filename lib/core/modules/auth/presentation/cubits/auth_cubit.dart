@@ -95,7 +95,12 @@ class AuthCubit extends Cubit<AuthState> {
 
   // ─── Login ────────────────────────────────────────────────────────────────
 
-  Future<void> login({required String phone, required String password}) async {
+  Future<Function> login({
+    required String phone,
+    required String password,
+    Function? handleResponse,
+    Function? handleError,
+  }) async {
     emit(const AuthLoading());
     final result = await sl.auth.login(
       LoginRequest(phone: phone, password: password),
@@ -103,8 +108,10 @@ class AuthCubit extends Cubit<AuthState> {
     switch (result) {
       case Success(:final data):
         emit(AuthAuthenticated(data.user));
+        return handleResponse?.call();
       case Failure(:final exception):
         emit(AuthFailure(exception.message));
+        return handleError?.call();
     }
   }
 

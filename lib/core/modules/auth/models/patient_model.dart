@@ -1,8 +1,10 @@
+// import 'package:bedaya2/core/config/app_config.dart';
 import 'package:bedaya2/core/modules/auth/models/auth_models.dart';
 
 class PatientModel extends UserModel {
   final String phoneNumber;
   final MedicalProfile? medicalProfile;
+  final String? avatar;
 
   PatientModel({
     required super.id,
@@ -14,6 +16,7 @@ class PatientModel extends UserModel {
     required super.address,
     required this.phoneNumber,
     required super.nationality,
+    this.avatar,
     this.medicalProfile,
   });
 
@@ -36,6 +39,7 @@ class PatientModel extends UserModel {
     firstName: json['first_name'] as String? ?? '',
     lastName: json['last_name'] as String? ?? '',
     email: json['email'] as String?,
+    avatar: json['avatar'] as String? ?? '',
     phoneNumber: json['phone'] as String? ?? '',
     gender: json['gender'] as String? ?? '',
     address: json['address'] as String?,

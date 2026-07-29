@@ -47,6 +47,14 @@ class _LoginPageState extends State<LoginPage> {
       context.read<AuthCubit>().login(
         phone: _phoneCtrl.text.trim(),
         password: _passwordCtrl.text,
+        handleResponse: () {
+          // Redirect to MainNaviationPage or pop the login page if already logged in
+          if (Navigator.of(context).canPop()) {
+            Navigator.pop(context, true); // Pop and indicate successful login
+          } else {
+            Navigator.pushReplacementNamed(context, '/main');
+          }
+        },
       );
     }
   }
