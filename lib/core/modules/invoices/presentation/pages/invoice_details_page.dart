@@ -234,7 +234,7 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${item.quantity} x EGP ${item.unitPrice}',
+                        'EGP ${item.unitPrice}',
                         style: AppStyles.bodySmall.copyWith(
                           color: AppColors.textSecondary,
                         ),
@@ -242,6 +242,7 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
                     ],
                   ),
                 ),
+                SizedBox(width: 10),
                 Text(
                   'EGP ${item.total}',
                   style: AppStyles.bodyMedium.copyWith(
@@ -324,18 +325,17 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
             children: [
               const SizedBox(height: 20),
 
-              paymentMethodRow(
-                'Pay with PayPal',
-                'PayPal',
-                payWithPayPalAction,
-                Icons.payment,
-                Color.fromRGBO(0, 82, 255, 1),
-              ),
+              // paymentMethodRow(
+              //   'Pay with PayPal',
+              //   'PayPal',
+              //   payWithPayPalAction,
+              //   Icons.payment,
+              //   Color.fromRGBO(0, 82, 255, 1),
+              // ),
 
-              const SizedBox(height: 12),
-
+              // const SizedBox(height: 12),
               paymentMethodRow(
-                'Pay with Paymob',
+                'Credit Card',
                 'Paymob',
                 payWithPaymobAction,
                 Icons.credit_card,
@@ -355,20 +355,37 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
     return Row(
       children: [
         Expanded(
+          flex: 3,
           child: Row(
             children: [
               Icon(iconData, size: 24),
               SizedBox(width: 10),
-              Text(title.tr(), style: AppStyles.h3),
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  title,
+                  style: AppStyles.h2.copyWith(fontWeight: FontWeight.w600),
+                ),
+              ),
             ],
           ),
         ),
-        Expanded(
-          child: IconButton(
-            onPressed: () => callback(),
-            tooltip: paymentMethodText.tr(),
-            icon: Icon(iconData, size: 24, color: Colors.red),
-            color: iconColor,
+        GestureDetector(
+          onTap: () => callback(),
+          child: Row(
+            children: [
+              ElevatedButton(
+                onPressed: () => callback(),
+                style: ElevatedButton.styleFrom(backgroundColor: iconColor),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    'Pay'.tr(),
+                    style: AppStyles.whiteTitle.copyWith(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],

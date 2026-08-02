@@ -90,8 +90,8 @@ class FertilityTest {
       if (normalMin != null) 'normal_min': normalMin,
       if (normalMax != null) 'normal_max': normalMax,
       if (normalRangeText != null) 'normal_range_text': normalRangeText,
-      if (criticalLow != null) 'critical_low': criticalLow,
-      if (criticalHigh != null) 'critical_high': criticalHigh,
+      // if (criticalLow != null) 'critical_low': criticalLow,
+      // if (criticalHigh != null) 'critical_high': criticalHigh,
       if (description != null) 'description': description,
     };
   }
