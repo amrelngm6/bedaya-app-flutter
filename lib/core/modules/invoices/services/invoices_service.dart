@@ -36,7 +36,6 @@ class InvoicesService extends BaseApiService {
         perPage: AppConfig.defaultPageSize,
         total: 0,
       );
-      print('Error parsing invoices response: $e');
     }
     return res;
   });

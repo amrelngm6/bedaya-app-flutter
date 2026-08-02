@@ -402,6 +402,7 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage> {
       return;
     }
 
-    await payWithPaymob(context, _invoice!, {});
+    await sl.paymob.payWithPaymobWebview(context, _invoice!, {});
+    // await payWithPaymob(context, _invoice!, {});
   }
 }

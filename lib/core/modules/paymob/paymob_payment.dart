@@ -1,0 +1,161 @@
+import 'package:bedaya2/core/di/service_locator.dart';
+import 'package:bedaya2/core/network/network_result.dart';
+import 'package:bedaya2/core/services/helper_service.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import './paymob_service.dart';
+
+class PaymobCheckoutView extends StatefulWidget {
+  final Function onSuccess, onCancel, onError;
+  final String? note, clientId, secretKey;
+  final dynamic returnURL, cancelURL;
+
+  final Widget? loadingIndicator;
+  final List? transactions;
+  final bool? sandboxMode;
+  final int invoiceId;
+  const PaymobCheckoutView({
+    super.key,
+    required this.onSuccess,
+    required this.onError,
+    required this.onCancel,
+    required this.transactions,
+    required this.clientId,
+    required this.secretKey,
+    required this.returnURL,
+    required this.cancelURL,
+    required this.invoiceId,
+    this.sandboxMode = false,
+    this.note = '',
+    this.loadingIndicator,
+  });
+
+  @override
+  State<StatefulWidget> createState() {
+    return PaymobCheckoutViewState();
+  }
+}
+
+class PaymobCheckoutViewState extends State<PaymobCheckoutView> {
+  String? checkoutUrl;
+  String navUrl = '';
+  String executeUrl = '';
+  String accessToken = '';
+  bool loading = true;
+  bool pageloading = true;
+  bool loadingError = false;
+  late PaymobApiService services;
+  int pressed = 0;
+  double progress = 0;
+
+  late InAppWebViewController webView;
+
+  Map getOrderParams() {
+    Map<String, dynamic> temp = {
+      "intent": "sale",
+      "payer": {"payment_method": "paypal"},
+      "transactions": widget.transactions,
+      "note_to_payer": widget.note,
+      "redirect_urls": {
+        "return_url": widget.returnURL,
+        "cancel_url": widget.cancelURL,
+      },
+    };
+    return temp;
+  }
+
+  @override
+  void initState() {
+    services = sl.paymob;
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      try {
+        final res = await services.getPaymentUrl(widget.invoiceId);
+
+        switch (res) {
+          case Success(:final data):
+            setState(() {
+              checkoutUrl = data;
+            });
+            break;
+          case Failure(:final exception):
+            showSuccessDialog(context, 'Error'.tr(), exception.message, back);
+            break;
+        }
+      } catch (e) {
+        widget.onError(e);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (checkoutUrl != null) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          title: const Text("Paypal Payment"),
+        ),
+        body: Stack(
+          children: <Widget>[
+            InAppWebView(
+              shouldOverrideUrlLoading: (controller, navigationAction) async {
+                final url = navigationAction.request.url;
+
+                // if (url.toString().contains(widget.returnURL!)) {
+                //   exceutePayment(url, context);
+                //   return NavigationActionPolicy.CANCEL;
+                // }
+                if (url.toString().contains(widget.cancelURL!)) {
+                  widget.onCancel();
+                  back();
+
+                  return NavigationActionPolicy.CANCEL;
+                } else {
+                  return NavigationActionPolicy.ALLOW;
+                }
+              },
+              initialUrlRequest: URLRequest(
+                url: WebUri.uri(Uri.parse(checkoutUrl!)),
+              ),
+              initialSettings: InAppWebViewSettings(loadWithOverviewMode: true),
+              onWebViewCreated: (InAppWebViewController controller) {
+                webView = controller;
+              },
+              onCloseWindow: (InAppWebViewController controller) {
+                widget.onCancel();
+              },
+              onProgressChanged:
+                  (InAppWebViewController controller, int progress) {
+                    setState(() {
+                      this.progress = progress / 100;
+                    });
+                  },
+            ),
+            progress < 1
+                ? SizedBox(
+                    height: 3,
+                    child: LinearProgressIndicator(value: progress),
+                  )
+                : const SizedBox(),
+          ],
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          title: const Text("Paypal Payment"),
+        ),
+        body: Center(
+          child: widget.loadingIndicator ?? const CircularProgressIndicator(),
+        ),
+      );
+    }
+  }
+}

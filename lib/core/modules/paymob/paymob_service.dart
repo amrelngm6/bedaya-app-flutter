@@ -1,8 +1,14 @@
 import 'package:bedaya2/core/modules/invoices/models/invoice.dart';
+import 'package:bedaya2/core/modules/paymob/paymob_payment.dart';
+import 'package:bedaya2/core/network/api_endpoints.dart';
 // import 'package:bedaya2/core/network/api_endpoints.dart';
 import 'package:bedaya2/core/network/base_api_service.dart';
+import 'package:bedaya2/core/services/helper_service.dart';
 import 'package:dio/dio.dart';
 import 'package:bedaya2/core/network/network_result.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 /// Backend-facing service for Paymob-related operations.
 ///
@@ -43,4 +49,86 @@ class PaymobApiService extends BaseApiService {
 
     return clientSecret;
   });
+
+  Future<NetworkResult<String>> getPaymentUrl(int invoiceId) =>
+      execute(() async {
+        final response = await dio.get<Map<String, dynamic>>(
+          ApiEndpoints.getPaymentUrl(invoiceId),
+        );
+        final data = response.data;
+        final paymentUrl = data?['payment_url'] as String?;
+
+        if (paymentUrl == null || paymentUrl.isEmpty) {
+          throw Exception('Payment URL not returned by server.');
+        }
+
+        return paymentUrl;
+      });
+
+  Future<void> payWithPaymobWebview(
+    BuildContext context,
+    Invoice invoice,
+    Map<String, dynamic> setting,
+  ) async {
+    final paymentUrlResult = await getPaymentUrl(invoice.invoiceId);
+    switch (paymentUrlResult) {
+      case Success(:final data):
+        final paymentUrl = data;
+        if (paymentUrl.isEmpty) {
+          showSuccessDialog(
+            context,
+            'Error'.tr(),
+            'Payment URL is empty.'.tr(),
+            back,
+          );
+          return;
+        }
+
+        // Open the payment URL in a webview
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PaymobCheckoutView(
+              onSuccess: (data) {
+                print('Payment successful: $data');
+                Navigator.pop(context, data);
+              },
+              onError: (error) {
+                print('Payment error: $error');
+                Navigator.pop(context);
+                showSuccessDialog(
+                  context,
+                  'Error'.tr(),
+                  error.toString(),
+                  back,
+                );
+              },
+              onCancel: () {
+                print('Payment cancelled by user.');
+                Navigator.pop(context);
+                showSuccessDialog(
+                  context,
+                  'Error'.tr(),
+                  'Payment failed.'.tr(),
+                  back,
+                );
+              },
+              transactions: [
+                {
+                  "amount": invoice.totalAmount,
+                  "currency": setting['currency']?.toString() ?? 'USD',
+                },
+              ],
+              clientId: setting['paymob_client_id']?.toString() ?? '',
+              secretKey: setting['paymob_client_secret']?.toString() ?? '',
+              returnURL: setting['paymob_return_url']?.toString() ?? '',
+              cancelURL: setting['paymob_cancel_url']?.toString() ?? '',
+              invoiceId: invoice.invoiceId,
+            ),
+          ),
+        );
+      case Failure(:final exception):
+        showSuccessDialog(context, 'Error'.tr(), exception.message, back);
+    }
+  }
 }

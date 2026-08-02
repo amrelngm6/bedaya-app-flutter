@@ -58,6 +58,7 @@ abstract final class ApiEndpoints {
   // ─── Invoices ─────────────────────────────────────────────────────────────────
   static const String invoices = '/invoices';
   static String invoiceById(Object id) => '/invoices/show/$id';
+  static String getPaymentUrl(Object id) => '/invoices/payment-url/$id';
   static const String addInvoiceTransaction = '/invoices/transaction';
   static const String paymobCreateIntention = '/payments/paymob/intention';
 
