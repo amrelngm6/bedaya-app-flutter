@@ -23,6 +23,8 @@ class CreateBookingRequest {
     this.bookingDate,
     this.title,
     this.startTime,
+    this.cost,
+    this.serviceId,
   });
 
   final int doctorId;
@@ -30,6 +32,8 @@ class CreateBookingRequest {
   final String? bookingDate;
   final String? title;
   final String? startTime;
+  final int? serviceId;
+  final double? cost;
 
   /// 'in_person' | 'online'
   final String bookingType;
@@ -39,6 +43,8 @@ class CreateBookingRequest {
     'doctor_id': doctorId,
     'slot_id': slotId,
     'booking_type': bookingType,
+    if (cost != null) 'cost': cost,
+    if (serviceId != null) 'service_id': serviceId,
     if (bookingDate != null && bookingDate!.isNotEmpty)
       'scheduled_date': bookingDate!.trim(),
 

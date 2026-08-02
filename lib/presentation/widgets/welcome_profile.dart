@@ -63,12 +63,12 @@ class WelcomeProfile extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Stack(
+                  alignment: Alignment.topRight,
                   children: [
                     Container(
                       // Placeholder for the doctor image
                       padding: const EdgeInsets.only(top: 0),
-                      height: 100,
-                      width: 100,
+                      height: 95,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
                           // Using a placeholder image since we don't have assets
@@ -76,7 +76,7 @@ class WelcomeProfile extends StatelessWidget {
                             '${AppConfig.baseUrl}/images/logo.png',
                           ),
                           fit: BoxFit.fitWidth,
-                          alignment: Alignment.bottomLeft,
+                          alignment: Alignment.center,
                         ),
                       ),
                     ),

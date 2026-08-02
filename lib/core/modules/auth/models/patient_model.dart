@@ -16,6 +16,7 @@ class PatientModel extends UserModel {
     required super.address,
     required this.phoneNumber,
     required super.nationality,
+    super.nationalityType,
     this.avatar,
     this.medicalProfile,
   });
@@ -44,6 +45,7 @@ class PatientModel extends UserModel {
     gender: json['gender'] as String? ?? '',
     address: json['address'] as String?,
     nationality: json['nationality'] as String? ?? '',
+    nationalityType: json['nationality_type'] as String? ?? '',
   );
 }
 

@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:bedaya2/core/modules/auth/models/auth_models.dart';
 import 'package:bedaya2/core/modules/bookings/presentation/widgets/auth_required_sheet.dart';
 import 'package:bedaya2/core/modules/doctors/models/available_slot.dart';
+import 'package:bedaya2/core/modules/doctors/models/doctor_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:bedaya2/core/di/service_locator.dart';
@@ -37,8 +39,10 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
+  UserModel? currentUser;
   // Doctors from API
   List<DoctorApiModel> _doctors = [];
+  DoctorApiModel? selectedDoctor;
   bool _isLoadingDoctors = true;
   String? _doctorsError;
 
@@ -67,11 +71,14 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
     );
     _animationController.forward();
 
+    _loadCurrentUser();
     _loadDoctors();
     _checkAuthAndProceed(back: false);
 
-    if (widget.preselectedDoctor != null) {
-      final d = widget.preselectedDoctor!;
+    selectedDoctor = widget.preselectedDoctor;
+
+    if (selectedDoctor != null) {
+      final d = selectedDoctor!;
       _booking.doctorId = d.id;
       _booking.doctorName = d.name;
       _booking.doctorSpecialty = d.specialty;
@@ -90,10 +97,21 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
             : BookingType.inPerson;
       });
       Timer(const Duration(milliseconds: 600), () {
-        if (mounted) _nextStep();
+        if (mounted) print(currentUser);
       });
     }
     sl.analytics.trackScreen('BookingAppointmentPage');
+  }
+
+  Future<void> _loadCurrentUser() async {
+    final result = await sl.auth.getMyProfile();
+    if (!mounted) return;
+    switch (result) {
+      case Success(:final data):
+        setState(() => currentUser = data);
+      case Failure():
+        setState(() => currentUser = null);
+    }
   }
 
   Future<void> _loadDoctors() async {
@@ -109,9 +127,9 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
           _doctors = data.data;
           _isLoadingDoctors = false;
           // If a preselected doctor isn't already in the list, inject it
-          if (widget.preselectedDoctor != null &&
-              !_doctors.any((d) => d.id == widget.preselectedDoctor!.id)) {
-            _doctors = [widget.preselectedDoctor!, ..._doctors];
+          if (selectedDoctor != null &&
+              !_doctors.any((d) => d.id == selectedDoctor!.id)) {
+            _doctors = [selectedDoctor!, ..._doctors];
           }
         });
       case Failure(:final exception):
@@ -119,8 +137,8 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
           _isLoadingDoctors = false;
           _doctorsError = exception.message;
           // Keep preselected doctor available even if list fetch failed
-          if (widget.preselectedDoctor != null) {
-            _doctors = [widget.preselectedDoctor!];
+          if (selectedDoctor != null) {
+            _doctors = [selectedDoctor!];
           }
         });
     }
@@ -259,6 +277,8 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
     final request = CreateBookingRequest(
       doctorId: _booking.doctorId!,
       // slotId: _selectedSlotId!,
+      cost: _booking.cost,
+      serviceId: _booking.serviceId,
       slotId: 1,
       bookingType: _booking.bookingType == BookingType.online
           ? 'online'
@@ -598,22 +618,24 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
               style: AppStyles.bodyMedium,
             ),
             const SizedBox(height: 32),
-            _buildBookingTypeCard(
-              type: BookingType.inPerson,
-              icon: Icons.local_hospital,
-              title: 'In-Person Visit'.tr(),
-              description: 'Visit the hospital for consultation'.tr(),
-              price: consultationFee,
-            ),
-            const SizedBox(height: 20),
-            if (widget.preselectedDoctor?.hasOnlineBooking == true)
+            for (DoctorService service in selectedDoctor?.services ?? [])
               _buildBookingTypeCard(
-                type: BookingType.online,
-                icon: Icons.video_call,
-                title: 'Online Consultation'.tr(),
-                description: 'Video call with the doctor'.tr(),
-                price: consultationFee * 0.8,
-                discount: '20% OFF'.tr(),
+                service: service,
+                type: service.isOnline
+                    ? BookingType.online
+                    : BookingType.inPerson,
+                icon: service.isOnline
+                    ? Icons.video_call
+                    : Icons.local_hospital,
+                title: context.locale == Locale('ar')
+                    ? service.arabicName ?? service.name
+                    : service.name,
+                description: service.isOnline
+                    ? 'Online Consultation'.tr()
+                    : 'Visit the hospital for consultation'.tr(),
+                price: service.getPriceForUserType(
+                  "${currentUser?.nationalityType}",
+                ),
               ),
           ],
         ),
@@ -622,6 +644,7 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
   }
 
   Widget _buildBookingTypeCard({
+    required DoctorService service,
     required BookingType type,
     required IconData icon,
     required String title,
@@ -629,12 +652,13 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
     required double price,
     String? discount,
   }) {
-    final isSelected = _booking.bookingType == type;
+    final isSelected = _booking.serviceId == service.id;
     return GestureDetector(
-      onTap: () => _confirmBookingType(type, price),
+      onTap: () => _confirmBookingType(service, type, price),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(15),
+        margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -653,85 +677,102 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
             ),
           ],
         ),
-        child: Row(
+        child: Stack(
           children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? AppColors.primaryTeal.withValues(alpha: 0.1)
-                    : AppColors.lightBlueBackground,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(
-                icon,
-                size: 32,
-                color: isSelected ? AppColors.primaryTeal : AppColors.darkTeal,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: AppStyles.h3.copyWith(fontSize: 16)),
-                  const SizedBox(height: 4),
-                  Text(description, style: AppStyles.bodyMedium),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? AppColors.primaryTeal.withValues(alpha: 0.1)
+                        : AppColors.lightBlueBackground,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 32,
+                    color: isSelected
+                        ? AppColors.primaryTeal
+                        : AppColors.darkTeal,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'EGP ${price.toInt()}',
-                        style: AppStyles.h3.copyWith(
-                          color: AppColors.primaryTeal,
-                          fontSize: 18,
-                        ),
-                      ),
-
-                      if (discount != null) ...[
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.onlineGreen,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            discount,
-                            style: AppStyles.bodySmall.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 10,
+                      Text(title, style: AppStyles.h3.copyWith(fontSize: 16)),
+                      const SizedBox(height: 4),
+                      Text(description, style: AppStyles.bodyMedium),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'EGP ${price.toInt()}',
+                            style: AppStyles.h3.copyWith(
+                              color: AppColors.primaryTeal,
+                              fontSize: 18,
                             ),
                           ),
-                        ),
-                      ],
+
+                          if (discount != null) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.onlineGreen,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                discount,
+                                style: AppStyles.bodySmall.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isSelected ? AppColors.primaryTeal : Colors.white,
-                border: Border.all(
-                  color: isSelected
-                      ? AppColors.primaryTeal
-                      : AppColors.greyOutline,
-                  width: 2,
                 ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isSelected ? AppColors.primaryTeal : Colors.white,
+                    border: Border.all(
+                      color: isSelected
+                          ? AppColors.primaryTeal
+                          : AppColors.greyOutline,
+                      width: 2,
+                    ),
+                  ),
+                  child: isSelected
+                      ? const Icon(Icons.check, size: 16, color: Colors.white)
+                      : null,
+                ),
+              ],
+            ),
+            Positioned(
+              left: 0,
+              bottom: 0,
+              child: Icon(
+                service.isOnline ? Icons.video_call : Icons.local_hospital,
+                color: isSelected
+                    ? AppColors.primaryTeal
+                    : AppColors.greyOutline,
+                size: 24,
               ),
-              child: isSelected
-                  ? const Icon(Icons.check, size: 16, color: Colors.white)
-                  : null,
             ),
           ],
         ),
@@ -1213,18 +1254,18 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
     );
   }
 
-  void _confirmBookingType(BookingType type, double price) {
+  void _confirmBookingType(
+    DoctorService service,
+    BookingType type,
+    double price,
+  ) {
     setState(() {
+      _booking.serviceId = service.id;
       _booking.bookingType = type;
-      if (type == BookingType.online) {
-        _booking.cost = price;
-      } else {
-        final doc = _doctors.cast<DoctorApiModel?>().firstWhere(
-          (d) => d?.id == _booking.doctorId,
-          orElse: () => null,
-        );
-        _booking.cost = doc?.consultationFee ?? consultationFee;
-      }
+      _booking.cost = service.getPriceForUserType(
+        "${currentUser?.nationalityType}",
+      );
+
       // Reset slot when visit type changes
       _selectedSlotId = null;
       _booking.selectedTime = null;

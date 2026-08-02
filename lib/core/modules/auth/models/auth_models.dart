@@ -239,6 +239,7 @@ class UserModel {
     required this.lastName,
     required this.phone,
     required this.nationality,
+    required this.nationalityType,
     this.email,
     this.avatar,
     this.gender,
@@ -258,6 +259,7 @@ class UserModel {
   final String nationality;
   final String? email;
   final String? avatar;
+  final String? nationalityType;
 
   /// 'male' | 'female'
   final String? gender;
@@ -283,6 +285,7 @@ class UserModel {
       phone: json['phone'] as String? ?? '',
       email: json['email'] as String? ?? '',
       nationality: json['nationality'] as String? ?? '',
+      nationalityType: json['nationality_type'] as String? ?? '',
       avatar: avatar,
       gender: json['gender'] as String? ?? '',
       dateOfBirth: json['date_of_birth'] as String? ?? '',
@@ -325,11 +328,13 @@ class UserModel {
     String? emergencyContact,
     String? emergencyContactName,
     String? nationality,
+    String? nationalityType,
   }) => UserModel(
     id: id,
     firstName: firstName ?? this.firstName,
     lastName: lastName ?? this.lastName,
     nationality: nationality ?? this.nationality,
+    nationalityType: nationalityType ?? this.nationalityType,
     phone: phone,
     email: email ?? this.email,
     avatar: avatar ?? this.avatar,
