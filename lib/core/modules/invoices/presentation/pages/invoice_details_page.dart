@@ -1,4 +1,3 @@
-import 'package:bedaya2/core/modules/paymob/paymob_function.dart';
 import 'package:bedaya2/core/modules/paypal/paypal_function.dart';
 import 'package:bedaya2/core/services/helper_service.dart';
 import 'package:easy_localization/easy_localization.dart';
