@@ -606,14 +606,15 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
               price: consultationFee,
             ),
             const SizedBox(height: 20),
-            _buildBookingTypeCard(
-              type: BookingType.online,
-              icon: Icons.video_call,
-              title: 'Online Consultation'.tr(),
-              description: 'Video call with the doctor'.tr(),
-              price: consultationFee * 0.8,
-              discount: '20% OFF'.tr(),
-            ),
+            if (widget.preselectedDoctor?.hasOnlineBooking == true)
+              _buildBookingTypeCard(
+                type: BookingType.online,
+                icon: Icons.video_call,
+                title: 'Online Consultation'.tr(),
+                description: 'Video call with the doctor'.tr(),
+                price: consultationFee * 0.8,
+                discount: '20% OFF'.tr(),
+              ),
           ],
         ),
       ),
@@ -873,7 +874,7 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
           child: Text(
-            'No available slots for this date'.tr(),
+            'Time will be defined and we will inform you'.tr(),
             style: AppStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),

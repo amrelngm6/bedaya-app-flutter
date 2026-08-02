@@ -23,9 +23,9 @@ class _DoctorsSliderState extends State<DoctorsSlider> {
   List<dynamic> _categories = [];
 
   // Doctor data structure
-  final Map<int, List<Map<String, dynamic>>> _doctorsByCategory = {};
+  final Map<int, List<DoctorApiModel>> _doctorsByCategory = {};
 
-  List<Map<String, dynamic>> get _filteredDoctors {
+  List<DoctorApiModel> get _filteredDoctors {
     if (_categories.isEmpty) return [];
 
     // return doctors who have specialty matching any of the categories (except "All")
@@ -34,10 +34,10 @@ class _DoctorsSliderState extends State<DoctorsSlider> {
     ) {
       if (_selectedCategoryIndex == 0) return true; // "All" category
       final selectedCategory = _categories[_selectedCategoryIndex]['name'];
-      return doctor["specialty"] == selectedCategory;
+      return doctor.specialty == selectedCategory;
     }).toList();
 
-    return allDoctors;
+    return allDoctors.cast<DoctorApiModel>();
   }
 
   String _translateCategoryName(
@@ -106,30 +106,10 @@ class _DoctorsSliderState extends State<DoctorsSlider> {
     switch (result) {
       case Success(:final data):
         setState(() {
-          _doctorsByCategory[category.id] = data.data
-              .map(
-                (d) => {
-                  "id": d.id,
-                  "name": d.name,
-                  'arabicName': d.arabicName,
-                  "specialty": d.specialty,
-                  'arabicSpecialty': d.arabicSpecialty,
-                  "categoryId": d.categoryId,
-                  "rating": d.rating,
-                  "experienceYears": d.experienceYears,
-                  "imageUrl": d.imageUrl,
-                  "consultationFee": d.consultationFee,
-                  "isLikedByMe": d.isLikedByMe,
-                  "availableBookingTypes": d.availableBookingTypes,
-                },
-              )
-              .toList();
+          _doctorsByCategory[category.id] = data.data.cast<DoctorApiModel>();
           _loadingDoctors[key] = false;
         });
       case Failure(:final exception):
-        print(
-          'Error loading doctors for category ${category.name}: ${exception.message}',
-        );
         setState(() {
           _doctorsByCategory[category.id] = [];
           _loadingDoctors[key] = false;
@@ -237,22 +217,7 @@ class _DoctorsSliderState extends State<DoctorsSlider> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: _filteredDoctors.map((doctor) {
-                      return DoctorCard(
-                        doctor: DoctorApiModel(
-                          id: doctor["id"],
-                          name: doctor["name"],
-                          arabicName: doctor["arabicName"] ?? '',
-                          specialty: doctor["specialty"],
-                          categoryId: doctor["categoryId"] ?? 0,
-                          arabicSpecialty: doctor["arabicSpecialty"] ?? '',
-                          rating: doctor["rating"].toDouble(),
-                          experienceYears: doctor["experienceYears"],
-                          imageUrl: doctor["imageUrl"],
-                          reviewsCount: doctor["reviewsCount"] ?? 160,
-                          consultationFee:
-                              doctor["consultationFee"]?.toDouble() ?? 0.0,
-                        ),
-                      );
+                      return DoctorCard(doctor: doctor);
                     }).toList(),
                   ),
                 ),

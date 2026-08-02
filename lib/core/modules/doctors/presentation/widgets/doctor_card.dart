@@ -18,28 +18,7 @@ class DoctorCard extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DoctorDetailsPage(
-          doctor: DoctorApiModel(
-            id: doctor.id,
-            name: doctor.name,
-            arabicName: doctor.arabicName,
-            bio: doctor.bio,
-            specialty: doctor.specialty,
-            arabicSpecialty: doctor.arabicSpecialty,
-            categoryId: doctor.categoryId,
-            imageUrl: doctor.imageUrl,
-            rating: doctor.rating,
-            reviewsCount: doctor.reviewsCount,
-            experienceYears: doctor.experienceYears,
-            isLikedByMe: doctor.isLikedByMe,
-            availableBookingTypes: doctor.availableBookingTypes,
-            isOnlineNow: doctor.isOnlineNow,
-            nextAvailableSlot: doctor.nextAvailableSlot,
-            languages: doctor.languages,
-            consultationFee: doctor
-                .consultationFee, // This can be dynamic based on real data
-          ),
-        ),
+        builder: (context) => DoctorDetailsPage(doctor: doctor),
       ),
     );
   }

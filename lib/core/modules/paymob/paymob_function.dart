@@ -32,7 +32,7 @@ Future<void> payWithPaymob(
       'ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiR0Z6Y3lJNklrMWxjbU5vWVc1MElpd2ljSEp2Wm1sc1pWOXdheUk2TmpFMU1UWXNJbTVoYldVaU9pSXhOemcwTVRVNE1UYzJMamN5TkRReU15SjkuUmtDU1pFMTQ1dTJNajYxZDNhNWVjT1haLXhiSVZUYUIwWjdBaEUtVjVJNEhvQ0c3d3NiTzBHWl9VR1lGdGpEamdBS0hZdjFNR096Zzh2Vk9xQWE4UXc=';
   var clientSecret = setting['paymob_client_secret']?.toString();
 
-  if (publicKey == null || publicKey.isEmpty) {
+  if (publicKey.isEmpty) {
     showSuccessDialog(
       context,
       'Error'.tr(),

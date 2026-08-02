@@ -47,16 +47,22 @@ class DoctorApiModel {
 
   factory DoctorApiModel.fromJson(Map<String, dynamic> json) {
     return DoctorApiModel(
-      id: json['doctor_id'] as int,
+      id: (json['doctor_id'] ?? json['id']) as int,
       name: json['name'] as String? ?? '',
       arabicName: json['arabic_name'] as String? ?? '',
-      specialty: json['category']['name'] as String,
-      arabicSpecialty: json['category']['arabic_name'] as String? ?? '--',
-      categoryId: json['category']['category_id'] as int,
+      specialty: json['category'] != null
+          ? json['category']['name'] as String
+          : '',
+      arabicSpecialty: json['category'] != null
+          ? json['category']['arabic_name'] as String
+          : '',
+      categoryId: json['category'] != null
+          ? (json['category']['category_id'] ?? 0) as int
+          : 0,
       imageUrl: json['picture'] as String? ?? '',
       rating: double.tryParse(json['rating']?.toString() ?? '0.0') ?? 0.0,
       reviewsCount: json['reviews_count'] as int? ?? 160,
-      experienceYears: json['experience_years'] as int? ?? 0,
+      experienceYears: (json['experience_years'] ?? 0) as int,
       consultationFee: (json['consultation_fee'] as num?)?.toDouble() ?? 0.0,
       isLikedByMe: json['is_liked_by_me'] as bool? ?? false,
       bio: json['about'] as String?,

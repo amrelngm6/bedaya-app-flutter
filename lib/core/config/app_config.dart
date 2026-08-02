@@ -9,13 +9,13 @@ class AppConfig {
 
   // ─── Backend Base URL ───────────────────────────────────────────────────────
   /// The root URL of the Laravel API (no trailing slash).
-  static const String baseUrl = 'https://bedayaapp.mediansdb.site';
+  static const String baseUrl = 'https://bedayaapp.com';
 
   /// Full base URL including the API prefix.
   static const String apiBaseUrl = '$baseUrl/secured-api';
 
   /// Version string to send in API requests for compatibility checks.
-  static const String version = '1.1.1';
+  static const String version = '1.1.4';
 
   // ─── HTTP Timeouts ──────────────────────────────────────────────────────────
   static const Duration connectTimeout = Duration(seconds: 30);
@@ -36,7 +36,7 @@ class AppConfig {
 
   // ─── App version ─────────────────────────────────────────────────────────────
   /// Current running version of the app (must match pubspec.yaml).
-  static const String currentVersion = '1.1.1+11';
+  static const String currentVersion = '1.1.4+14';
 
   /// Returns `true` when [currentVersion] is lower than [minVersion].
   /// Uses semantic version comparison (major.minor.patch).
