@@ -2,14 +2,14 @@ import 'package:bedaya2/core/theme/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class MedicalReportAiCard extends StatelessWidget {
+class AiDoctorBannerCard extends StatelessWidget {
   final String badgeText;
   final String title;
   final String description;
   final String buttonText;
   final VoidCallback onTap;
 
-  const MedicalReportAiCard({
+  const AiDoctorBannerCard({
     super.key,
     this.badgeText = '',
     this.title = '',
@@ -23,21 +23,20 @@ class MedicalReportAiCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28.0),
-        // Soft gradient combining light teal and soft cream/pink from your app's palette
+        borderRadius: BorderRadius.circular(24.0),
+        // Soft gradient using the app's teal tone blended into light background
         gradient: const LinearGradient(
           colors: [
-            Color(0xFFDCF3F3), // Soft pastel teal
-            Color(0xFFFFF7EA), // Warm light tint
-            Color(0xFFFBE4EF), // Gentle pink tint
+            AppColors.darkTeal, // App Primary Deep Teal
+            Color(0xFF2FA4AA), // Lighter Teal Accent
           ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF006D77).withValues(alpha: 0.06),
-            blurRadius: 20,
+            color: AppColors.darkTeal.withValues(alpha: 0.25),
+            blurRadius: 16,
             offset: const Offset(0, 8),
           ),
         ],
@@ -53,7 +52,7 @@ class MedicalReportAiCard extends StatelessWidget {
               height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.darkTeal.withValues(alpha: 0.08),
+                color: Colors.white.withValues(alpha: 0.08),
               ),
             ),
           ),
@@ -106,7 +105,7 @@ class MedicalReportAiCard extends StatelessWidget {
                           Text(
                             badgeText,
                             style: const TextStyle(
-                              color: Color(0xFF2FA4AA),
+                              color: Colors.white,
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
                             ),
@@ -130,7 +129,7 @@ class MedicalReportAiCard extends StatelessWidget {
                         ],
                       ),
                       child: const Icon(
-                        Icons.medical_information_outlined, // AI / Bot Icon
+                        Icons.smart_toy_rounded, // AI / Bot Icon
                         color: AppColors.darkTeal,
                         size: 26,
                       ),
@@ -146,7 +145,7 @@ class MedicalReportAiCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.darkTeal,
+                    color: Colors.white,
                     height: 1.3,
                   ),
                 ),
@@ -157,7 +156,7 @@ class MedicalReportAiCard extends StatelessWidget {
                   description,
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.darkTeal.withValues(alpha: 0.88),
+                    color: Colors.white.withValues(alpha: 0.88),
                     height: 1.4,
                   ),
                 ),
@@ -196,7 +195,7 @@ class MedicalReportAiCard extends StatelessWidget {
                                     .arrow_forward_ios, // Use arrow_forward_rounded for LTR
                           size: 18,
                           color: AppColors.darkTeal,
-                        ),
+                        ), // Use arrow_forward_rounded for LTR
                       ],
                     ),
                   ),

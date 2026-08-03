@@ -1,17 +1,19 @@
 import 'dart:async';
 
 import 'package:bedaya2/core/models/slide_model.dart';
+import 'package:bedaya2/core/modules/ai/presentation/pages/ai_chatbot_page.dart';
 import 'package:bedaya2/core/modules/ai/presentation/widgets/smart_medical_analysis_card.dart';
 import 'package:bedaya2/core/modules/articles/models/article_model.dart';
 import 'package:bedaya2/core/modules/auth/models/patient_model.dart';
 import 'package:bedaya2/core/models/section_model.dart';
 import 'package:bedaya2/core/modules/bookings/models/appointment_model.dart';
+import 'package:bedaya2/core/modules/medication/presentation/pages/medications_list_page.dart';
 import 'package:bedaya2/core/modules/notifications/presentation/pages/notifications_page.dart';
 import 'package:bedaya2/core/modules/notifications/services/notification_api_service.dart';
 import 'package:bedaya2/core/modules/services/models/hospital_service_model.dart';
 import 'package:bedaya2/core/modules/videos/models/video_model.dart';
 import 'package:bedaya2/core/network/network_result.dart';
-import 'package:bedaya2/core/modules/ai/presentation/widgets/ai_banner.dart';
+import 'package:bedaya2/core/modules/ai/presentation/widgets/ai_doctor_banner_card.dart';
 import 'package:bedaya2/core/modules/bookings/presentation/widgets/appointment_card.dart';
 import 'package:bedaya2/core/modules/articles/presentation/widgets/articles_widget.dart';
 import 'package:bedaya2/core/modules/doctors/presentation/widgets/doctors_slider.dart';
@@ -282,13 +284,54 @@ class _HomePageState extends State<HomePage> {
       case 'articles':
         return articlesWidget();
       case 'pill_reminder':
-        return PillReminder();
+        return PillReminderCard(
+          title: 'Pill Reminder'.tr(),
+          subtitle: 'Never miss your medication'.tr(),
+          buttonText: 'Start Reminder'.tr(),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MedicationsListPage(),
+              ),
+            );
+          },
+        );
+      // return PillReminder();
       case 'banner':
         return WelcomeBannerSlider(slides: slides);
       case 'ai_text_banner':
-        return const AITextBanner();
+        return AiDoctorBannerCard(
+          title: 'AI Assistant Doctor'.tr(),
+          description: 'Ask our AI assistant to analyze your medical reports'
+              .tr(),
+          badgeText: 'AI Doctor'.tr(),
+          buttonText: 'Talk to Smart Doctor'.tr(),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AIChatbotPage(initialTabIndex: 0),
+              ),
+            );
+          },
+        );
       case 'ai_medical_banner':
-        return SmartMedicalAnalysisCard();
+        return MedicalReportAiCard(
+          title: 'Smart Medical Analysis'.tr(),
+          badgeText: 'Medical Reports AI Analysis'.tr(),
+          description: 'Ask our AI assistant to analyze your medical reports'
+              .tr(),
+          buttonText: 'AI Medical Analysis'.tr(),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AIChatbotPage(initialTabIndex: 0),
+              ),
+            );
+          },
+        );
       case 'bookings':
         return upcomingBookings.isNotEmpty
             ? AppointmentCard(appointment: upcomingBookings.last)
