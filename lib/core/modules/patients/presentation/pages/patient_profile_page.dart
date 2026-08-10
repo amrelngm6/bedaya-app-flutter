@@ -1,4 +1,5 @@
 // import 'package:bedaya2/core/models/auth_models.dart';
+import 'package:bedaya2/core/config/app_config.dart';
 import 'package:bedaya2/core/modules/auth/models/patient_model.dart';
 import 'package:bedaya2/core/modules/patients/services/image-service.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -20,9 +21,13 @@ class _PatientProfilePageState extends State<PatientProfilePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
+  // PatientModel get patient => widget.patient;
+  late PatientModel patient;
+
   @override
   void initState() {
     super.initState();
+    patient = widget.patient;
     _tabController = TabController(length: 1, vsync: this);
   }
 
@@ -123,13 +128,13 @@ class _PatientProfilePageState extends State<PatientProfilePage>
                     child: CircleAvatar(
                       radius: 60,
                       backgroundColor: Colors.white,
-                      backgroundImage: widget.patient.avatar != null
-                          ? NetworkImage(widget.patient.avatar!)
+                      backgroundImage: patient.avatar != null
+                          ? NetworkImage(patient.avatar!)
                           : null,
-                      child: widget.patient.avatar == null
+                      child: patient.avatar == null
                           ? Text(
-                              widget.patient.firstName[0].toUpperCase() +
-                                  widget.patient.lastName[0].toUpperCase(),
+                              patient.firstName[0].toUpperCase() +
+                                  patient.lastName[0].toUpperCase(),
                               style: AppStyles.h1.copyWith(
                                 fontSize: 40,
                                 color: AppColors.primaryTeal,
@@ -142,7 +147,7 @@ class _PatientProfilePageState extends State<PatientProfilePage>
                 const SizedBox(height: 16),
                 // Name
                 Text(
-                  widget.patient.fullName,
+                  patient.fullName,
                   style: AppStyles.h1.copyWith(
                     color: Colors.white,
                     fontSize: 24,
@@ -151,7 +156,7 @@ class _PatientProfilePageState extends State<PatientProfilePage>
                 const SizedBox(height: 4),
                 // Age and Gender
                 Text(
-                  "• ${widget.patient.gender!.tr()}",
+                  "• ${patient.gender!.tr()}",
                   style: AppStyles.bodyMedium.copyWith(
                     color: Colors.white.withValues(alpha: 0.9),
                   ),
@@ -175,19 +180,15 @@ class _PatientProfilePageState extends State<PatientProfilePage>
             title: "Contact Information".tr(),
             icon: Icons.contact_phone,
             children: [
-              _buildInfoRow(
-                Icons.email,
-                "Email".tr(),
-                widget.patient.email ?? '',
-              ),
+              _buildInfoRow(Icons.email, "Email".tr(), patient.email ?? ''),
               const Divider(height: 24),
-              _buildInfoRow(Icons.phone, "Phone".tr(), widget.patient.phone),
+              _buildInfoRow(Icons.phone, "Phone".tr(), patient.phone),
               const Divider(height: 24),
               _buildInfoRow(
                 Icons.location_on,
                 "Address".tr(),
-                widget.patient.address != null
-                    ? widget.patient.address!
+                patient.address != null
+                    ? patient.address!
                     : "No address provided".tr(),
               ),
             ],
@@ -202,49 +203,49 @@ class _PatientProfilePageState extends State<PatientProfilePage>
               _buildInfoRow(
                 Icons.cake,
                 "Date of Birth".tr(),
-                widget.patient.dateOfBirth != null
+                patient.dateOfBirth != null
                     ? DateFormat(
                         'dd MMM yyyy',
-                      ).format(DateTime.parse(widget.patient.dateOfBirth!))
+                      ).format(DateTime.parse(patient.dateOfBirth!))
                     : '',
               ),
               const Divider(height: 24),
               _buildInfoRow(
                 Icons.badge,
                 "Patient ID".tr(),
-                widget.patient.id.toString(),
+                patient.id.toString(),
               ),
               const Divider(height: 24),
               _buildInfoRow(
                 Icons.bloodtype,
                 "Blood Type".tr(),
-                widget.patient.medicalProfile?.bloodType ?? "N/A",
+                patient.medicalProfile?.bloodType ?? "N/A",
               ),
             ],
           ),
           const SizedBox(height: 16),
 
           // Emergency Contact Card
-          if (widget.patient.emergencyContactName != null ||
-              widget.patient.emergencyContact != null)
+          if (patient.emergencyContactName != null ||
+              patient.emergencyContact != null)
             _buildSectionCard(
               title: "Emergency Contact".tr(),
               icon: Icons.emergency,
               children: [
-                if (widget.patient.emergencyContactName != null)
+                if (patient.emergencyContactName != null)
                   _buildInfoRow(
                     Icons.person,
                     "Name".tr(),
-                    widget.patient.emergencyContactName!,
+                    patient.emergencyContactName!,
                   ),
-                if (widget.patient.emergencyContactName != null &&
-                    widget.patient.emergencyContact != null)
+                if (patient.emergencyContactName != null &&
+                    patient.emergencyContact != null)
                   const Divider(height: 24),
-                if (widget.patient.emergencyContact != null)
+                if (patient.emergencyContact != null)
                   _buildInfoRow(
                     Icons.phone,
                     "Phone".tr(),
-                    widget.patient.emergencyContact!,
+                    patient.emergencyContact!,
                   ),
               ],
             ),
@@ -338,15 +339,16 @@ class _PatientProfilePageState extends State<PatientProfilePage>
     final url = await imageService.uploadImage(image);
 
     if (url != null) {
-      print("Uploaded: $url");
-    } else {
-      print("Upload failed");
-    }
+      setState(() {
+        patient.avatar =
+            '${AppConfig.baseUrl}/$url'; // Update the patient's avatar URL
+      });
+    } else {}
   }
 
   /*
   Widget _buildMedicalProfileTab() {
-    final medical = widget.patient.medicalProfile;
+    final medical = patient.medicalProfile;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),

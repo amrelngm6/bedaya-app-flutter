@@ -22,6 +22,7 @@ class AiDoctorBannerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24.0),
         // Soft gradient using the app's teal tone blended into light background

@@ -54,8 +54,6 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
   // Submission state
   bool _isSubmitting = false;
 
-  double consultationFee = 0;
-
   // User authentication state
   // final bool _isAuthenticated = sl.auth.getCurrentUser() != null;
 
@@ -83,8 +81,6 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
       _booking.doctorName = d.name;
       _booking.doctorSpecialty = d.specialty;
       _booking.doctorImageUrl = d.imageUrl;
-      _booking.cost = d.consultationFee;
-      consultationFee = d.consultationFee;
 
       Timer(const Duration(milliseconds: 600), () {
         if (mounted) _nextStep();
@@ -475,12 +471,11 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
     return GestureDetector(
       onTap: () {
         setState(() {
+          selectedDoctor = doctor;
           _booking.doctorId = doctor.id;
           _booking.doctorName = doctor.name;
           _booking.doctorSpecialty = doctor.specialty;
           _booking.doctorImageUrl = doctor.imageUrl;
-          _booking.cost = doctor.consultationFee;
-          consultationFee = doctor.consultationFee;
           // Reset schedule when doctor changes
           _booking.selectedDate = null;
           _booking.selectedTime = null;
@@ -569,14 +564,6 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  '${doctor.consultationFee} ${'EGP'.tr()}',
-                  style: AppStyles.h3.copyWith(
-                    color: AppColors.primaryTeal,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 8),
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   width: 24,

@@ -42,6 +42,12 @@ class SideMenu extends StatelessWidget {
                 child: ListView(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   children: [
+                    _MenuItem(
+                      icon: Icons.home_outlined,
+                      label: 'Homepage'.tr(),
+                      onTap: () => Navigator.pop(context),
+                    ),
+
                     (user != null)
                         ? _MenuItem(
                             icon: Icons.event_note_outlined,
@@ -77,13 +83,6 @@ class SideMenu extends StatelessWidget {
                                 _navigate(context, const BookingsListPage()),
                           )
                         : const SizedBox.shrink(),
-
-                    _MenuItem(
-                      icon: Icons.home_outlined,
-                      label: 'Homepage'.tr(),
-                      onTap: () => Navigator.pop(context),
-                      badge: '',
-                    ),
 
                     _MenuItem(
                       icon: Icons.calendar_today_outlined,
@@ -354,7 +353,7 @@ class _MenuItem extends StatelessWidget {
     required this.onTap,
     this.iconColor,
     this.textColor,
-    this.badge,
+    // this.badge,
   });
 
   final IconData icon;
@@ -362,7 +361,7 @@ class _MenuItem extends StatelessWidget {
   final VoidCallback onTap;
   final Color? iconColor;
   final Color? textColor;
-  final String? badge;
+  // final String? badge;
 
   @override
   Widget build(BuildContext context) {
@@ -382,23 +381,23 @@ class _MenuItem extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          if (badge != null) ...[
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: AppColors.primaryTeal.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                badge!,
-                style: AppStyles.bodySmall.copyWith(
-                  color: AppColors.primaryTeal,
-                  fontSize: 10,
-                ),
-              ),
-            ),
-          ],
+          // if (badge != null) ...[
+          //   const SizedBox(width: 8),
+          //   Container(
+          //     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          //     decoration: BoxDecoration(
+          //       color: AppColors.primaryTeal.withValues(alpha: 0.12),
+          //       borderRadius: BorderRadius.circular(20),
+          //     ),
+          //     child: Text(
+          //       badge!,
+          //       style: AppStyles.bodySmall.copyWith(
+          //         color: AppColors.primaryTeal,
+          //         fontSize: 10,
+          //       ),
+          //     ),
+          //   ),
+          // ],
         ],
       ),
       onTap: onTap,

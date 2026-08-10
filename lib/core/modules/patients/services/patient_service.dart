@@ -32,7 +32,8 @@ class PatientService extends BaseApiService {
           ApiEndpoints.updateAvatar,
           data: formData,
         );
-        return response.data!['url'] ?? response.data as String;
+        return response.data!['data']['user']['avatar'] ??
+            response.data as String;
       });
 
   // ─── Medical Records ──────────────────────────────────────────────────────

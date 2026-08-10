@@ -6,7 +6,6 @@ import 'package:bedaya2/core/modules/chat/presentation/pages/chat_rooms_page.dar
 import 'package:bedaya2/core/modules/invoices/presentation/pages/invoices_page.dart';
 import 'package:bedaya2/core/modules/notifications/presentation/pages/notifications_page.dart';
 import 'package:bedaya2/core/modules/patients/presentation/pages/patient_profile_page.dart';
-import 'package:bedaya2/core/modules/services/presentation/pages/services_list_page.dart';
 import 'package:bedaya2/core/modules/videos/presentation/pages/video_reels_page.dart';
 import 'package:bedaya2/core/modules/patients/presentation/pages/settings_page.dart';
 import 'package:bedaya2/core/modules/auth/presentation/pages/register_page.dart';
@@ -18,7 +17,6 @@ import 'package:bedaya2/core/theme/colors.dart';
 import 'package:bedaya2/core/theme/styles.dart';
 import 'package:bedaya2/core/modules/auth/presentation/cubits/auth_cubit.dart';
 import 'package:bedaya2/core/modules/auth/presentation/pages/login_page.dart';
-import 'package:bedaya2/core/modules/doctors/presentation/pages/doctors_list_page.dart';
 
 class SideMenuBottom extends StatelessWidget {
   final PatientModel? patient;
@@ -43,6 +41,12 @@ class SideMenuBottom extends StatelessWidget {
                 child: ListView(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   children: [
+                    _MenuItem(
+                      icon: Icons.home_outlined,
+                      label: 'Homepage'.tr(),
+                      onTap: () => Navigator.pop(context),
+                    ),
+
                     (user != null)
                         ? _MenuItem(
                             icon: Icons.event_note_outlined,
@@ -78,25 +82,6 @@ class SideMenuBottom extends StatelessWidget {
                                 _navigate(context, const BookingsListPage()),
                           )
                         : const SizedBox.shrink(),
-
-                    _MenuItem(
-                      icon: Icons.home_outlined,
-                      label: 'Homepage'.tr(),
-                      onTap: () => Navigator.pop(context),
-                      badge: '',
-                    ),
-
-                    _MenuItem(
-                      icon: Icons.calendar_today_outlined,
-                      label: 'doctors'.tr(),
-                      onTap: () => _navigate(context, const DoctorsListPage()),
-                    ),
-
-                    _MenuItem(
-                      icon: Icons.medical_services_outlined,
-                      label: 'services'.tr(),
-                      onTap: () => _navigate(context, const ServicesListPage()),
-                    ),
 
                     _MenuItem(
                       icon: Icons.video_library_outlined,
@@ -358,7 +343,7 @@ class _MenuItem extends StatelessWidget {
     required this.onTap,
     this.iconColor,
     this.textColor,
-    this.badge,
+    // this.badge,
   });
 
   final IconData icon;
@@ -366,7 +351,7 @@ class _MenuItem extends StatelessWidget {
   final VoidCallback onTap;
   final Color? iconColor;
   final Color? textColor;
-  final String? badge;
+  // final String? badge;
 
   @override
   Widget build(BuildContext context) {
@@ -386,23 +371,23 @@ class _MenuItem extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          if (badge != null) ...[
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: AppColors.primaryTeal.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                badge!,
-                style: AppStyles.bodySmall.copyWith(
-                  color: AppColors.primaryTeal,
-                  fontSize: 10,
-                ),
-              ),
-            ),
-          ],
+          // if (badge != null) ...[
+          //   const SizedBox(width: 8),
+          //   Container(
+          //     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          //     decoration: BoxDecoration(
+          //       color: AppColors.primaryTeal.withValues(alpha: 0.12),
+          //       borderRadius: BorderRadius.circular(20),
+          //     ),
+          //     child: Text(
+          //       badge!,
+          //       style: AppStyles.bodySmall.copyWith(
+          //         color: AppColors.primaryTeal,
+          //         fontSize: 10,
+          //       ),
+          //     ),
+          //   ),
+          // ],
         ],
       ),
       onTap: onTap,

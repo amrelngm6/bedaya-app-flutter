@@ -108,7 +108,7 @@ class AuthCubit extends Cubit<AuthState> {
     switch (result) {
       case Success(:final data):
         emit(AuthAuthenticated(data.user));
-        return handleResponse != null ? handleResponse.call() : null;
+        return handleResponse?.call();
       case Failure(:final exception):
         emit(AuthFailure(exception.message));
         return handleError?.call();

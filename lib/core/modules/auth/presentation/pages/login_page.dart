@@ -1,5 +1,6 @@
 import 'package:bedaya2/core/di/service_locator.dart';
 import 'package:bedaya2/core/modules/auth/presentation/widgets/divider.dart';
+import 'package:bedaya2/presentation/widgets/main-navigation.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,13 +48,14 @@ class _LoginPageState extends State<LoginPage> {
       context.read<AuthCubit>().login(
         phone: _phoneCtrl.text.trim(),
         password: _passwordCtrl.text,
+        handleError: () {},
         handleResponse: () {
           // Redirect to MainNaviationPage or pop the login page if already logged in
-          if (Navigator.of(context).canPop()) {
-            Navigator.pop(context, true); // Pop and indicate successful login
-          } else {
-            Navigator.pushReplacementNamed(context, '/main');
-          }
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const MainNavigationPage()),
+            (route) => false, // This condition clears the entire history
+          );
         },
       );
     }
@@ -130,9 +132,14 @@ class _LoginPageState extends State<LoginPage> {
             (curr is AuthFailure && prev is AuthLoading),
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            if (Navigator.of(context).canPop()) {
-              Navigator.pop(context, true); // Pop and indicate successful login
-            }
+            // Redirect to MainNaviationPage or pop the login page if already logged in
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MainNavigationPage(),
+              ),
+              (route) => false, // This condition clears the entire history
+            );
           } else if (state is AuthFailure) {
             _showError(context, state.message);
           }

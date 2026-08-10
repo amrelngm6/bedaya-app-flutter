@@ -3,6 +3,7 @@ import 'package:bedaya2/core/modules/auth/presentation/widgets/auth_select_field
 import 'package:bedaya2/core/modules/auth/presentation/widgets/divider.dart';
 import 'package:bedaya2/core/modules/auth/presentation/widgets/login_link.dart';
 import 'package:bedaya2/core/network/network_result.dart';
+import 'package:bedaya2/presentation/widgets/main-navigation.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -171,7 +172,14 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             );
           } else if (state is AuthAuthenticated) {
-            Navigator.of(context).popUntil((r) => r.isFirst);
+            // Redirect to MainNaviationPage or pop the login page if already logged in
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MainNavigationPage(),
+              ),
+              (route) => false, // This condition clears the entire history
+            );
           } else if (state is AuthFailure) {
             _showError(context, state.message);
           }
@@ -305,7 +313,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                               // ── Nationality (Dropdown) ─────────────────────────────────────────────
                               AuthSelectField(
-                                label: 'auth_phone'.tr(),
+                                label: 'Nationality'.tr(),
                                 value: _selectedNationality,
                                 onChanged: (value) {
                                   setState(() => _selectedNationality = value);

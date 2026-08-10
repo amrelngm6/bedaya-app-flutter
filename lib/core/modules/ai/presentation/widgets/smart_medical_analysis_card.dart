@@ -22,6 +22,7 @@ class MedicalReportAiCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28.0),
         // Soft gradient combining light teal and soft cream/pink from your app's palette

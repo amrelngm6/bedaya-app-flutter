@@ -4,7 +4,7 @@ import 'package:bedaya2/core/modules/auth/models/auth_models.dart';
 class PatientModel extends UserModel {
   final String phoneNumber;
   final MedicalProfile? medicalProfile;
-  final String? avatar;
+  String? avatar;
 
   PatientModel({
     required super.id,

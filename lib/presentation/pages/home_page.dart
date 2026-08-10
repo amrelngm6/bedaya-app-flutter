@@ -287,7 +287,7 @@ class _HomePageState extends State<HomePage> {
         return PillReminderCard(
           title: 'Pill Reminder'.tr(),
           subtitle: 'Never miss your medication'.tr(),
-          buttonText: 'Start Reminder'.tr(),
+          buttonText: 'Review Medicines Reminders'.tr(),
           onTap: () {
             Navigator.push(
               context,
