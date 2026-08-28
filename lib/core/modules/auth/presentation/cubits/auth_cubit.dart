@@ -95,10 +95,10 @@ class AuthCubit extends Cubit<AuthState> {
 
   // ─── Login ────────────────────────────────────────────────────────────────
 
-  Future<Function> login({
+  Future<void> login({
     required String phone,
     required String password,
-    Function? handleResponse,
+    required Function handleResponse,
     Function? handleError,
   }) async {
     emit(const AuthLoading());
@@ -108,10 +108,10 @@ class AuthCubit extends Cubit<AuthState> {
     switch (result) {
       case Success(:final data):
         emit(AuthAuthenticated(data.user));
-        return handleResponse?.call();
+        // await handleResponse.call();
       case Failure(:final exception):
         emit(AuthFailure(exception.message));
-        return handleError?.call();
+        // await handleError?.call();
     }
   }
 
@@ -144,14 +144,7 @@ class AuthCubit extends Cubit<AuthState> {
     );
     switch (result) {
       case Success(:final data):
-        // if (!data.user.isPhoneVerified) {
-        //   // Phone needs OTP verification before the account is active.
-        //   emit(
-        //     AuthOtpRequired(phone: phone, otpType: OtpType.phoneVerification),
-        //   );
-        // } else {
         emit(AuthAuthenticated(data.user));
-      // }
       case Failure(:final exception):
         emit(AuthFailure(exception.message));
     }

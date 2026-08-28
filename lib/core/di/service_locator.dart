@@ -1,3 +1,4 @@
+import 'package:bedaya2/core/modules/ai/services/ai_medical_chat_service.dart';
 import 'package:bedaya2/core/network/api_client.dart';
 import 'package:bedaya2/core/services/storage_service.dart';
 import 'package:bedaya2/core/services/app_config_service.dart';
@@ -56,6 +57,7 @@ class ServiceLocator {
   late final MedicationReminderService medicationReminders;
   late final VideoService videos;
   late final MedicalReportService medicalReports;
+  late final AIMedicalChatService aiMedicalChat;
   late final InvoicesService invoices;
   late final PaymobApiService paymob;
 
@@ -89,6 +91,7 @@ class ServiceLocator {
     await medicationReminders.initialize();
     videos = VideoService(apiClient);
     medicalReports = MedicalReportService(apiClient);
+    aiMedicalChat = AIMedicalChatService(apiClient);
     invoices = InvoicesService(apiClient);
     paymob = PaymobApiService(apiClient);
 

@@ -60,18 +60,12 @@ class _AIChatbotPageState extends State<AIChatbotPage>
             sheetCtx,
             MaterialPageRoute(builder: (_) => const LoginPage()),
           );
-          if (sl.storage.isLoggedIn && sheetCtx.mounted) {
-            Navigator.pop(sheetCtx);
-          }
         },
         onNavigateToRegister: () async {
           await Navigator.push(
             sheetCtx,
             MaterialPageRoute(builder: (_) => const RegisterPage()),
           );
-          if (sl.storage.isLoggedIn && sheetCtx.mounted) {
-            Navigator.pop(sheetCtx);
-          }
         },
         onGoBack: () {
           Navigator.pop(sheetCtx);
@@ -81,9 +75,9 @@ class _AIChatbotPageState extends State<AIChatbotPage>
     );
 
     // If the modal was closed without authenticating, leave the booking page.
-    if (mounted && !sl.storage.isLoggedIn && back == true) {
-      Navigator.pop(context);
-    }
+    // if (mounted && !sl.storage.isLoggedIn && back == true) {
+    //   Navigator.pop(context);
+    // }
   }
 
   @override

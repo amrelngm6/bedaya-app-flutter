@@ -49,13 +49,7 @@ class _LoginPageState extends State<LoginPage> {
         phone: _phoneCtrl.text.trim(),
         password: _passwordCtrl.text,
         handleError: () {},
-        handleResponse: () {
-          // Redirect to MainNaviationPage or pop the login page if already logged in
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const MainNavigationPage()),
-            (route) => false, // This condition clears the entire history
-          );
+        handleResponse: () async {
         },
       );
     }

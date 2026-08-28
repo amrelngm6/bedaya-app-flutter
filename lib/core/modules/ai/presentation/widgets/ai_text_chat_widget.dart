@@ -1,9 +1,12 @@
+import 'package:bedaya2/core/di/service_locator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:url_launcher/url_launcher.dart';
 import '../../../chat/models/chat_message_model.dart';
 import '../../../../data/sample_ai_data.dart';
 import '../../../../theme/colors.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class AITextChatWidget extends StatefulWidget {
   const AITextChatWidget({super.key});
@@ -96,7 +99,7 @@ class _AITextChatWidgetState extends State<AITextChatWidget> {
     }
   }
 
-  void _sendMessage() {
+  void _sendMessage() async {
     if (_messageController.text.trim().isEmpty) return;
 
     final userMessage = ChatMessage(
@@ -114,55 +117,68 @@ class _AITextChatWidgetState extends State<AITextChatWidget> {
     _scrollToBottom();
 
     // Simulate AI response (replace with API call later)
-    Future.delayed(const Duration(seconds: 2), () {
-      final aiResponse = _generateAIResponse(_messageController.text);
-      final aiMessage = ChatMessage(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        content: aiResponse,
-        isUser: false,
-        timestamp: DateTime.now(),
+    // Future.delayed(const Duration(seconds: 2), () {
+    //   final aiResponse = _generateAIResponse(_messageController.text);
+    //   final aiMessage = ChatMessage(
+    //     id: DateTime.now().millisecondsSinceEpoch.toString(),
+    //     content: aiResponse,
+    //     isUser: false,
+    //     timestamp: DateTime.now(),
+    //   );
+
+    //   setState(() {
+    //     _messages.add(aiMessage);
+    //     _isTyping = false;
+    //   });
+
+    //   _scrollToBottom();
+    // });
+    final response = await sl.aiMedicalChat.sendTextToAIMedicalChat(
+      _messageController.text,
+    );
+    setState(() {
+      _messages.add(
+        ChatMessage(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          content: response,
+          isUser: false,
+          timestamp: DateTime.now(),
+        ),
       );
-
-      setState(() {
-        _messages.add(aiMessage);
-        _isTyping = false;
-      });
-
-      _scrollToBottom();
+      _isTyping = false;
     });
 
     _messageController.clear();
   }
 
-  String _generateAIResponse(String userMessage) {
-    final message = userMessage.toLowerCase();
-    final responses = SampleAIData.getChatResponses();
-
-    // Simple keyword matching (replace with actual API call later)
-    if (message.contains('ivf') || message.contains('fertilization')) {
-      return responses['ivf']!;
-    } else if (message.contains('cost') || message.contains('price')) {
-      return responses['cost']!;
-    } else if (message.contains('success') || message.contains('rate')) {
-      return responses['success']!;
-    } else if (message.contains('prepare') || message.contains('preparation')) {
-      return responses['preparation']!;
-    } else if (message.contains('timeline') ||
-        message.contains('how long') ||
-        message.contains('duration')) {
-      return responses['timeline']!;
-    } else if (message.contains('medication') ||
-        message.contains('medicine') ||
-        message.contains('drug')) {
-      return responses['medication']!;
-    } else if (message.contains('risk') || message.contains('side effect')) {
-      return responses['risks']!;
-    } else if (message.contains('age')) {
-      return responses['age']!;
-    } else {
-      return responses['default']!;
-    }
-  }
+  // String _generateAIResponse(String userMessage) {
+  //   final message = userMessage.toLowerCase();
+  //   final responses = SampleAIData.getChatResponses();
+  //   // Simple keyword matching (replace with actual API call later)
+  //   if (message.contains('ivf') || message.contains('fertilization')) {
+  //     return responses['ivf']!;
+  //   } else if (message.contains('cost') || message.contains('price')) {
+  //     return responses['cost']!;
+  //   } else if (message.contains('success') || message.contains('rate')) {
+  //     return responses['success']!;
+  //   } else if (message.contains('prepare') || message.contains('preparation')) {
+  //     return responses['preparation']!;
+  //   } else if (message.contains('timeline') ||
+  //       message.contains('how long') ||
+  //       message.contains('duration')) {
+  //     return responses['timeline']!;
+  //   } else if (message.contains('medication') ||
+  //       message.contains('medicine') ||
+  //       message.contains('drug')) {
+  //     return responses['medication']!;
+  //   } else if (message.contains('risk') || message.contains('side effect')) {
+  //     return responses['risks']!;
+  //   } else if (message.contains('age')) {
+  //     return responses['age']!;
+  //   } else {
+  //     return responses['default']!;
+  //   }
+  // }
 
   void _scrollToBottom() {
     Future.delayed(const Duration(milliseconds: 100), () {
@@ -311,12 +327,19 @@ class _AITextChatWidgetState extends State<AITextChatWidget> {
                           : null,
                     ),
                   ),
-                  child: Text(
-                    message.content,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: message.isUser ? Colors.white : Colors.black87,
-                      height: 1.4,
+                  child: MarkdownBody(
+                    data: message.content,
+                    onTapLink: (text, href, title) async {
+                      if (href != null) {
+                        await launchUrl(Uri.parse(href));
+                      }
+                    },
+                    styleSheet: MarkdownStyleSheet(
+                      p: TextStyle(
+                        fontSize: 15,
+                        color: message.isUser ? Colors.white : Colors.black87,
+                        height: 1.4,
+                      ),
                     ),
                   ),
                 ),

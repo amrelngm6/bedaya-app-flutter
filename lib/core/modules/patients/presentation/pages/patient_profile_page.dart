@@ -1,12 +1,16 @@
 // import 'package:bedaya2/core/models/auth_models.dart';
 import 'package:bedaya2/core/config/app_config.dart';
+import 'package:bedaya2/core/di/service_locator.dart';
 import 'package:bedaya2/core/modules/auth/models/patient_model.dart';
+import 'package:bedaya2/core/modules/patients/models/medical_condition_model.dart';
 import 'package:bedaya2/core/modules/patients/services/image-service.dart';
+import 'package:bedaya2/core/network/network_result.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../theme/colors.dart';
 import '../../../../theme/styles.dart';
+import 'medical_condition_details_page.dart';
 
 class PatientProfilePage extends StatefulWidget {
   final PatientModel patient;
@@ -24,11 +28,36 @@ class _PatientProfilePageState extends State<PatientProfilePage>
   // PatientModel get patient => widget.patient;
   late PatientModel patient;
 
+  List<MedicalProfileCondition>? _conditions;
+  bool _loadingConditions = false;
+  String? _conditionsError;
+
   @override
   void initState() {
     super.initState();
     patient = widget.patient;
-    _tabController = TabController(length: 1, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
+    _fetchConditions();
+  }
+
+  Future<void> _fetchConditions() async {
+    setState(() {
+      _loadingConditions = true;
+      _conditionsError = null;
+    });
+
+    final result = await sl.patient.getMedicalConditions();
+
+    if (!mounted) return;
+    setState(() {
+      _loadingConditions = false;
+      switch (result) {
+        case Success(:final data):
+          _conditions = data;
+        case Failure(:final exception):
+          _conditionsError = exception.message;
+      }
+    });
   }
 
   @override
@@ -60,7 +89,7 @@ class _PatientProfilePageState extends State<PatientProfilePage>
                 indicatorWeight: 3,
                 tabs: [
                   Tab(text: "Personal Info".tr()),
-                  // Tab(text: "Medical Profile".tr()),
+                  Tab(text: "Medical Profile".tr()),
                 ],
               ),
             ),
@@ -70,7 +99,7 @@ class _PatientProfilePageState extends State<PatientProfilePage>
           SliverFillRemaining(
             child: TabBarView(
               controller: _tabController,
-              children: [_buildPersonalInfoTab()],
+              children: [_buildPersonalInfoTab(), _buildMedicalProfileTab()],
             ),
           ),
         ],
@@ -346,504 +375,201 @@ class _PatientProfilePageState extends State<PatientProfilePage>
     } else {}
   }
 
-  /*
   Widget _buildMedicalProfileTab() {
-    final medical = patient.medicalProfile;
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Health Stats Card
-          _buildSectionCard(
-            title: "Health Statistics".tr(),
-            icon: Icons.monitor_heart,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildStatBox(
-                      "Height".tr(),
-                      medical?.height != null
-                          ? "${medical!.height!.toStringAsFixed(0)} cm"
-                          : "N/A",
-                      Icons.height,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildStatBox(
-                      "Weight".tr(),
-                      medical?.weight != null
-                          ? "${medical!.weight!.toStringAsFixed(1)} kg"
-                          : "N/A",
-                      Icons.monitor_weight,
-                    ),
-                  ),
-                ],
-              ),
-              if (medical?.bmi != null) ...[
-                const SizedBox(height: 16),
-                _buildBMIIndicator(medical!.bmi!, medical.bmiCategory),
-              ],
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // Insurance Card
-          if (medical?.insuranceProvider != null)
-            _buildSectionCard(
-              title: "Insurance Information".tr(),
-              icon: Icons.medical_services,
-              children: [
-                _buildInfoRow(
-                  Icons.business,
-                  "Provider".tr(),
-                  medical!.insuranceProvider!,
-                ),
-                if (medical.insuranceNumber != null) ...[
-                  const Divider(height: 24),
-                  _buildInfoRow(
-                    Icons.numbers,
-                    "Policy Number".tr(),
-                    medical.insuranceNumber!,
-                  ),
-                ],
-              ],
-            ),
-          const SizedBox(height: 16),
-
-          // Allergies Card
-          _buildListCard(
-            title: "Allergies".tr(),
-            icon: Icons.warning_amber,
-            items: medical?.allergies ?? [],
-            emptyMessage: "No allergies recorded".tr(),
-            color: Colors.red,
-          ),
-          const SizedBox(height: 16),
-
-          // Chronic Diseases Card
-          _buildListCard(
-            title: "Chronic Diseases".tr(),
-            icon: Icons.medical_information,
-            items: medical?.chronicDiseases ?? [],
-            emptyMessage: "No chronic diseases recorded".tr(),
-            color: Colors.orange,
-          ),
-          const SizedBox(height: 16),
-
-          // Current Medications Card
-          _buildMedicationsCard(medical?.currentMedications ?? []),
-          const SizedBox(height: 16),
-
-          // Medical History Card
-          _buildMedicalHistoryCard(medical?.medicalHistory ?? []),
-          const SizedBox(height: 16),
-
-          // Vaccinations Card
-          _buildVaccinationsCard(medical?.vaccinations ?? []),
-
-          // Notes Card
-          if (medical?.notes != null && medical!.notes!.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            _buildSectionCard(
-              title: "Medical Notes".tr(),
-              icon: Icons.note_alt,
-              children: [
-                Text(
-                  medical.notes!,
-                  style: AppStyles.bodyMedium.copyWith(height: 1.5),
-                ),
-              ],
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatBox(String label, String value, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.primaryTeal.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primaryTeal.withValues(alpha: 0.2)),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: AppColors.primaryTeal, size: 28),
-          const SizedBox(height: 8),
-          Text(value, style: AppStyles.h3.copyWith(fontSize: 20)),
-          const SizedBox(height: 4),
-          Text(label, style: AppStyles.bodySmall),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBMIIndicator(double bmi, String category) {
-    Color getColorForBMI() {
-      if (bmi < 18.5) return Colors.blue;
-      if (bmi < 25) return Colors.green;
-      if (bmi < 30) return Colors.orange;
-      return Colors.red;
+    if (_loadingConditions && _conditions == null) {
+      return const Center(
+        child: CircularProgressIndicator(color: AppColors.primaryTeal),
+      );
     }
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: getColorForBMI().withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: getColorForBMI().withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.calculate, color: getColorForBMI(), size: 24),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Body Mass Index (BMI)".tr(), style: AppStyles.bodySmall),
-                const SizedBox(height: 4),
-                Row(
+    if (_conditionsError != null && _conditions == null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(_conditionsError!, style: AppStyles.bodyMedium),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _fetchConditions,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryTeal,
+                foregroundColor: Colors.white,
+              ),
+              child: Text('Retry'.tr()),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final conditions = _conditions ?? [];
+
+    if (conditions.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: _fetchConditions,
+        color: AppColors.primaryTeal,
+        child: Stack(
+          children: [
+            ListView(),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Icon(
+                      Icons.folder_shared_outlined,
+                      size: 56,
+                      color: AppColors.textSecondary.withValues(alpha: 0.5),
+                    ),
+                    const SizedBox(height: 16),
                     Text(
-                      bmi.toStringAsFixed(1),
-                      style: AppStyles.h3.copyWith(
-                        color: getColorForBMI(),
-                        fontSize: 20,
-                      ),
+                      'No medical conditions recorded'.tr(),
+                      style: AppStyles.h3.copyWith(fontSize: 16),
+                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      "• $category".tr(),
-                      style: AppStyles.bodyMedium.copyWith(
-                        color: getColorForBMI(),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildListCard({
-    required String title,
-    required IconData icon,
-    required List<String> items,
-    required String emptyMessage,
-    required Color color,
-  }) {
-    return _buildSectionCard(
-      title: title,
-      icon: icon,
-      children: [
-        if (items.isEmpty)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                emptyMessage,
-                style: AppStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-          )
-        else
-          ...items.map(
-            (item) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text(item, style: AppStyles.bodyMedium)),
-                ],
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildMedicationsCard(List<Medication> medications) {
-    return _buildSectionCard(
-      title: "Current Medications".tr(),
-      icon: Icons.medication,
-      children: [
-        if (medications.isEmpty)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                "No current medications".tr(),
-                style: AppStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-          )
-        else
-          ...medications.map((med) {
-            final isActive =
-                med.endDate == null || med.endDate!.isAfter(DateTime.now());
-            return Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: isActive
-                    ? AppColors.onlineGreen.withValues(alpha: 0.05)
-                    : Colors.grey.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: isActive
-                      ? AppColors.onlineGreen.withValues(alpha: 0.2)
-                      : Colors.grey.withValues(alpha: 0.2),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          med.name,
-                          style: AppStyles.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                      ),
-                      if (isActive)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.onlineGreen,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            "Active".tr(),
-                            style: AppStyles.bodySmall.copyWith(
-                              color: Colors.white,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "${'Dosage'.tr()}: ${med.dosage} • ${med.frequency}",
-                    style: AppStyles.bodySmall,
-                  ),
-                  if (med.prescribedBy != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      "${'Prescribed by'.tr()}: ${med.prescribedBy}",
-                      style: AppStyles.bodySmall.copyWith(
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            );
-          }),
-      ],
-    );
-  }
-  
-  Widget _buildMedicalHistoryCard(List<MedicalHistory> history) {
-    return _buildSectionCard(
-      title: "Medical History".tr(),
-      icon: Icons.history,
-      children: [
-        if (history.isEmpty)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                "No medical history recorded".tr(),
-                style: AppStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-          )
-        else
-          ...history.map((item) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.primaryPurple.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: AppColors.primaryPurple.withValues(alpha: 0.2),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          item.condition,
-                          style: AppStyles.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        DateFormat('dd MMM yyyy').format(item.date),
-                        style: AppStyles.bodySmall,
-                      ),
-                    ],
-                  ),
-                  if (item.treatment != null) ...[
                     const SizedBox(height: 8),
                     Text(
-                      "${'Treatment'.tr()}: ${item.treatment}",
-                      style: AppStyles.bodySmall,
+                      'Your medical conditions will appear here'.tr(),
+                      style: AppStyles.bodyMedium,
+                      textAlign: TextAlign.center,
                     ),
                   ],
-                  if (item.doctorName != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      "${'Doctor'.tr()}: ${item.doctorName}",
-                      style: AppStyles.bodySmall.copyWith(
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ],
-                  if (item.notes != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      item.notes!,
-                      style: AppStyles.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            );
-          }),
-      ],
-    );
-  }
-
-  Widget _buildVaccinationsCard(List<Vaccination> vaccinations) {
-    return _buildSectionCard(
-      title: "Vaccinations".tr(),
-      icon: Icons.vaccines,
-      children: [
-        if (vaccinations.isEmpty)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                "No vaccinations recorded".tr(),
-                style: AppStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                  fontStyle: FontStyle.italic,
                 ),
               ),
             ),
-          )
-        else
-          ...vaccinations.map((vaccine) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: 12),
+          ],
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: _fetchConditions,
+      color: AppColors.primaryTeal,
+      child: ListView.separated(
+        padding: const EdgeInsets.all(20),
+        itemCount: conditions.length,
+        separatorBuilder: (context, index) => const SizedBox(height: 12),
+        itemBuilder: (context, index) => _buildConditionCard(conditions[index]),
+      ),
+    );
+  }
+
+  Widget _buildConditionCard(MedicalProfileCondition condition) {
+    final categoryColor =
+        condition.category?.colorValue ?? AppColors.primaryTeal;
+    final statusColor = condition.statusColorValue;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                MedicalConditionDetailsPage(condition: condition),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: AppColors.greyOutline.withValues(alpha: 0.5),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primaryTeal.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.primaryTeal.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: AppColors.primaryTeal.withValues(alpha: 0.2),
-                ),
+                color: categoryColor.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
               ),
+              child: Icon(Icons.folder_shared, color: categoryColor, size: 22),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    condition.title,
+                    style: AppStyles.h3.copyWith(fontSize: 15),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 6),
                   Row(
                     children: [
-                      Expanded(
-                        child: Text(
-                          vaccine.name,
-                          style: AppStyles.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
+                      if (condition.category != null) ...[
+                        Flexible(
+                          child: Text(
+                            condition.category!.name,
+                            style: AppStyles.bodySmall,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                      ),
-                      Text(
-                        DateFormat('dd MMM yyyy').format(vaccine.date),
-                        style: AppStyles.bodySmall,
-                      ),
-                    ],
-                  ),
-                  if (vaccine.administeredBy != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      "${'Administered by'.tr()}: ${vaccine.administeredBy}",
-                      style: AppStyles.bodySmall,
-                    ),
-                  ],
-                  if (vaccine.nextDoseDate != null) ...[
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.event,
+                        const SizedBox(width: 8),
+                      ],
+                      if (condition.files.isNotEmpty) ...[
+                        const Icon(
+                          Icons.attach_file,
                           size: 14,
-                          color: AppColors.primaryPurple,
+                          color: AppColors.textSecondary,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 2),
                         Text(
-                          "${'Next dose'.tr()}: ${DateFormat('dd MMM yyyy').format(vaccine.nextDoseDate!)}",
-                          style: AppStyles.bodySmall.copyWith(
-                            color: AppColors.primaryPurple,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          '${condition.files.length}',
+                          style: AppStyles.bodySmall,
                         ),
                       ],
+                    ],
+                  ),
+                  if (condition.statusLabel != null) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: statusColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        condition.statusLabel!.tr(),
+                        style: AppStyles.bodySmall.copyWith(
+                          color: statusColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ],
                 ],
               ),
-            );
-          }),
-      ],
+            ),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: AppColors.textSecondary,
+            ),
+          ],
+        ),
+      ),
     );
   }
-  */
 }
 
 // Helper class for TabBar delegate

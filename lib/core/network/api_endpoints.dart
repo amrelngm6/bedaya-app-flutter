@@ -55,6 +55,10 @@ abstract final class ApiEndpoints {
   static const String services = '/services';
   static String serviceById(Object id) => '/services/$id';
 
+  // ─── NLP AI chat ─────────────────────────────────────────────────────────────
+  static const String aiMedicalChatSendText = '/nlp/process-text';
+  static const String aiMedicalChatHistory = '/nlp/chat-history';
+
   // ─── Invoices ─────────────────────────────────────────────────────────────────
   static const String invoices = '/invoices';
   static String invoiceById(Object id) => '/invoices/show/$id';
@@ -82,6 +86,11 @@ abstract final class ApiEndpoints {
   static const String patientAppointments = '/patient/appointments';
   static const String patientReports = '/patient/reports';
   static String patientReportById(Object id) => '/patient/reports/$id';
+
+  // ─── Medical Profile (Conditions) ────────────────────────────────────────
+  static const String medicalProfileConditions = '/medical-conditions';
+  static String medicalProfileConditionById(Object id) =>
+      '/medical-conditions/$id';
 
   // ──── Medical Reports ────────────────────────────────────────────────────────
   static const String medicalReportsTests = '/medical-reports/tests';

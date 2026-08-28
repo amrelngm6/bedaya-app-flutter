@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bedaya2/core/models/slide_model.dart';
 import 'package:bedaya2/core/modules/ai/presentation/pages/ai_chatbot_page.dart';
+import 'package:bedaya2/core/modules/ai/presentation/pages/ai_medical_analysis_page.dart';
 import 'package:bedaya2/core/modules/ai/presentation/widgets/smart_medical_analysis_card.dart';
 import 'package:bedaya2/core/modules/articles/models/article_model.dart';
 import 'package:bedaya2/core/modules/auth/models/patient_model.dart';
@@ -287,7 +288,7 @@ class _HomePageState extends State<HomePage> {
         return PillReminderCard(
           title: 'Pill Reminder'.tr(),
           subtitle: 'Never miss your medication'.tr(),
-          buttonText: 'Review Medicines Reminders'.tr(),
+          buttonText: 'Medicine Reminder'.tr(),
           onTap: () {
             Navigator.push(
               context,
@@ -327,7 +328,7 @@ class _HomePageState extends State<HomePage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const AIChatbotPage(initialTabIndex: 0),
+                builder: (context) => const AIMedicalAnalysisPage(),
               ),
             );
           },

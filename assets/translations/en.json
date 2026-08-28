@@ -524,6 +524,24 @@
   "your_version": "Your Version",
   "required_version": "Required Version",
   "bedaya_hospital_tagline": "Bedaya Hospital - Fertility and IVF",
-  "update_now": "Update Now"
+  "update_now": "Update Now",
+
+  "Medical Conditions": "Medical Conditions",
+  "No medical conditions recorded": "No medical conditions recorded",
+  "Your medical conditions will appear here": "Your medical conditions will appear here",
+  "Condition Details": "Condition Details",
+  "Condition not found": "Condition not found",
+  "Category": "Category",
+  "Status": "Status",
+  "Condition Date": "Condition Date",
+  "Notes": "Notes",
+  "Description": "Description",
+  "Attached Files": "Attached Files",
+  "No files attached": "No files attached",
+  "Unable to open file": "Unable to open file",
+  "condition_status_active": "Active",
+  "condition_status_resolved": "Resolved",
+  "condition_status_chronic": "Chronic",
+  "condition_status_monitoring": "Monitoring"
 
 }

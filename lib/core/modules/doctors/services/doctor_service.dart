@@ -111,10 +111,31 @@ class DoctorService extends BaseApiService {
         if (bookingType != null) 'booking_type': bookingType,
       },
     );
-    final raw = response.data?['data']['working_hours'] as List<dynamic>? ?? [];
+    final raw = response.data?['schedule'] as List<dynamic>? ?? [];
     return raw
         .whereType<Map<String, dynamic>>()
         .map((json) => AvailabilitySlot.fromJson(json, ''))
+        .toList();
+  });
+
+  // ─── Available slots ──────────────────────────────────────────────────────
+
+  Future<NetworkResult<List<AvailabilitySlot>>> getAvailableSlots({
+    required int doctorId,
+    required String date,
+    String? bookingType, // 'in_person' | 'online'
+  }) => execute(() async {
+    final response = await dio.get<Map<String, dynamic>>(
+      ApiEndpoints.slotsForDay(doctorId, date),
+      queryParameters: {
+        'date': date,
+        if (bookingType != null) 'booking_type': bookingType,
+      },
+    );
+    final raw = response.data?['data']['slots'] as List<dynamic>? ?? [];
+    return raw
+        .whereType<Map<String, dynamic>>()
+        .map((json) => AvailabilitySlot.fromJson(json, date))
         .toList();
   });
 

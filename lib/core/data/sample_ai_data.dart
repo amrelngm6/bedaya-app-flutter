@@ -61,7 +61,9 @@ class SampleAIData {
     return [
       ChatMessage(
         id: '1',
-        content: 'chat_greeting',
+        content:
+            "Hello! I'm your AI assistant. How can I help you with you today?"
+                .tr(),
         isUser: false,
         timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
       ),

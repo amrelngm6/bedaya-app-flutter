@@ -178,7 +178,6 @@ class AuthService extends BaseApiService {
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
-  
 
   /// Unwraps a `{ "data": {...} }` wrapper if present, otherwise returns
   /// the map as-is.

@@ -156,7 +156,7 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
     final bookingType = _booking.bookingType == BookingType.online
         ? 'online'
         : 'in_person';
-    final result = await sl.doctors.getWorkingHours(
+    final result = await sl.doctors.getAvailableSlots(
       doctorId: _booking.doctorId!,
       date: dateStr,
       bookingType: bookingType,
@@ -197,18 +197,12 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
             sheetCtx,
             MaterialPageRoute(builder: (_) => const LoginPage()),
           );
-          if (sl.storage.isLoggedIn && sheetCtx.mounted) {
-            Navigator.pop(sheetCtx);
-          }
         },
         onNavigateToRegister: () async {
           await Navigator.push(
             sheetCtx,
             MaterialPageRoute(builder: (_) => const RegisterPage()),
           );
-          if (sl.storage.isLoggedIn && sheetCtx.mounted) {
-            Navigator.pop(sheetCtx);
-          }
         },
         onGoBack: () {
           Navigator.pop(sheetCtx);
@@ -281,6 +275,7 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
           : 'in_person',
       notes: _booking.notes,
       startTime:
+          _booking.selectedTime ??
           '00:00', // Placeholder, as the API requires a start time even if it's not used
       bookingDate: _booking.selectedDate.toString(),
       title:
@@ -897,7 +892,8 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
       );
     }
 
-    if (_availabilitySlots.isEmpty) {
+    if (_availabilitySlots.isEmpty ||
+        _booking.bookingType == BookingType.online) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
@@ -924,14 +920,15 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
             ? slot.startTime.substring(0, 5)
             : slot.startTime;
         return GestureDetector(
-          onTap: slot.isAvailable
-              ? () {
-                  setState(() {
-                    _selectedSlotId = slot.slotId;
-                    _booking.selectedTime = displayTime;
-                  });
-                }
-              : null,
+          onTap:
+              // slot.isAvailable ?
+              () {
+                setState(() {
+                  _selectedSlotId = slot.slotId;
+                  _booking.selectedTime = displayTime;
+                });
+              },
+          // : null
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),

@@ -1,4 +1,3 @@
-import 'package:bedaya2/core/config/app_config.dart';
 import 'package:bedaya2/core/modules/auth/models/patient_model.dart';
 import 'package:bedaya2/core/modules/patients/presentation/pages/patient_profile_page.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +21,8 @@ class WelcomeProfile extends StatelessWidget {
         children: [
           Positioned(
             top: 0,
-            right: 0,
+            right: context.locale == const Locale('en') ? 0 : null,
+            left: context.locale == const Locale('ar') ? 0 : null,
             height: 100,
             child: Image.asset('assets/vector.png', fit: BoxFit.cover),
           ),
@@ -58,29 +58,6 @@ class WelcomeProfile extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Stack(
-                  alignment: Alignment.topRight,
-                  children: [
-                    Container(
-                      // Placeholder for the doctor image
-                      padding: const EdgeInsets.only(top: 0),
-                      height: 95,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          // Using a placeholder image since we don't have assets
-                          image: NetworkImage(
-                            '${AppConfig.baseUrl}/images/logo.png',
-                          ),
-                          fit: BoxFit.fitWidth,
-                          alignment: Alignment.center,
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ],

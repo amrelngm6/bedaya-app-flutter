@@ -5,6 +5,7 @@ import 'package:bedaya2/core/network/base_api_service.dart';
 import 'package:bedaya2/core/network/network_result.dart';
 import 'package:bedaya2/core/network/paginated_response.dart';
 import 'package:bedaya2/core/modules/auth/models/auth_models.dart';
+import 'package:bedaya2/core/modules/patients/models/medical_condition_model.dart';
 import 'package:bedaya2/core/modules/patients/models/medical_record_model.dart';
 import 'package:bedaya2/core/modules/patients/models/patient_medication.dart';
 import 'package:bedaya2/core/modules/patients/models/patient_medication_report.dart';
@@ -134,6 +135,32 @@ class PatientService extends BaseApiService {
       response.data!['data']['appointments'],
       (json) => json,
     );
+  });
+
+  // ─── Medical Profile (Conditions) ─────────────────────────────────────────
+
+  Future<NetworkResult<List<MedicalProfileCondition>>> getMedicalConditions() =>
+      execute(() async {
+        final response = await dio.get<Map<String, dynamic>>(
+          ApiEndpoints.medicalProfileConditions,
+        );
+        final data = _dataOf(response.data!);
+        final rawList =
+            (data['conditions'] ?? data['data'] ?? data) as List<dynamic>? ??
+            [];
+        return rawList
+            .whereType<Map<String, dynamic>>()
+            .map(MedicalProfileCondition.fromJson)
+            .toList();
+      });
+
+  Future<NetworkResult<MedicalProfileCondition>> getMedicalConditionById(
+    int id,
+  ) => execute(() async {
+    final response = await dio.get<Map<String, dynamic>>(
+      ApiEndpoints.medicalProfileConditionById(id),
+    );
+    return MedicalProfileCondition.fromJson(_dataOf(response.data!));
   });
 
   // ─── Helpers ──────────────────────────────────────────────────────────────

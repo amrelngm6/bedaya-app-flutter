@@ -354,10 +354,10 @@
   "chat_default_response": "شكراً لسؤالك. للحصول على نصائح طبية محددة، يرجى استشارة أخصائيي الخصوبة لدينا. يمكنك حجز موعد من خلال تطبيقنا أو الاتصال بخط المساعدة.",
   "chat_greeting": "مرحباً! أنا مساعد بداية الذكي. كيف يمكنني مساعدتك اليوم؟",
 
-  "What is IVF?": "ما هو التلقيح الصناعي؟",
-  "IVF success rates": "معدلات نجاح التلقيح الصناعي",
+  "What is IVF?": "ما هو الحقن المجهري",
+  "IVF success rates": "معدلات نجاح مستشفي بداية",
   "Treatment timeline": "الجدول الزمني للعلاج",
-  "Preparation tips": "نصائح التحضير",
+  "Preparation tips": "اريد التواصل المباشرة مع الطبيب",
 
   "analysis_hormone_name": "فحص الهرمونات",
   "analysis_hormone_desc": "مستويات الهرمونات الشاملة للخصوبة",
@@ -627,11 +627,12 @@
   "Go Back": "العودة",
   "Please log in or create an account to\ncomplete your appointment booking.": "يرجى تسجيل الدخول أو إنشاء حساب لإكمال حجز موعدك.",
   "Book Easily": "احجز بسهولة",
-  "Track History": "تتبع التاريخ",
+  "Track History": "تتبع اRلتاريخ",
   "Reminders": "التذكيرات",
   "Review Reminders": "راجع التذكيرات",
   "Review Medicines Reminders": "راجع تنبيهات الأدوية",
   "Nationality": "الجنسية",
+  "Hello! I'm your AI assistant. How can I help you with you today?": "اهلا بيك! أنا مساعدك الذكي. ازاى اقدر أساعدك؟",
 
   "retry": "إعادة المحاولة",
   "share": "مشاركة",
@@ -732,8 +733,24 @@
   "Total": "المجموع",
   "Invoice ID": "رقم الفاتورة",
   "Invoice Date": "تاريخ الفاتورة",
-  "Invoice Amount": "مبلغ الفاتورة" 
+  "Invoice Amount": "مبلغ الفاتورة",
 
-
+  "Medical Conditions": "الحالات الطبية",
+  "No medical conditions recorded": "لا توجد حالات طبية مسجلة",
+  "Your medical conditions will appear here": "ستظهر حالاتك الطبية هنا",
+  "Condition Details": "تفاصيل الحالة",
+  "Condition not found": "الحالة غير موجودة",
+  "Category": "التصنيف",
+  "Status": "الحالة",
+  "Condition Date": "تاريخ الحالة",
+  "Notes": "ملاحظات",
+  "Description": "الوصف",
+  "Attached Files": "الملفات المرفقة",
+  "No files attached": "لا توجد ملفات مرفقة",
+  "Unable to open file": "تعذر فتح الملف",
+  "condition_status_active": "نشطة",
+  "condition_status_resolved": "تم الشفاء",
+  "condition_status_chronic": "مزمنة",
+  "condition_status_monitoring": "تحت المتابعة"
 
 }

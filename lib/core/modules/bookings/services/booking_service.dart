@@ -50,10 +50,10 @@ class CreateBookingRequest {
 
     if (title != null && title!.isNotEmpty) 'title': title!.trim(),
 
-    // if (startTime != null && startTime!.isNotEmpty)
-    //   'start_time': startTime!.trim(),
-    'start_time': '00:00',
+    if (startTime != null && startTime!.isNotEmpty)
+      'start_time': startTime!.trim(),
 
+    // 'start_time': '00:00',
     if (notes != null && notes!.isNotEmpty) 'notes': notes!.trim(),
   };
 }
@@ -166,7 +166,6 @@ class BookingService extends BaseApiService {
         perPage: AppConfig.defaultPageSize,
         total: 0,
       );
-      print('Error parsing bookings response: $e');
     }
     return res;
   });

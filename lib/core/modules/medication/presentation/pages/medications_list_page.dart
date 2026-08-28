@@ -63,18 +63,12 @@ class _MedicationsListPageState extends State<MedicationsListPage>
             sheetCtx,
             MaterialPageRoute(builder: (_) => const LoginPage()),
           );
-          if (sl.storage.isLoggedIn && sheetCtx.mounted) {
-            Navigator.pop(sheetCtx);
-          }
         },
         onNavigateToRegister: () async {
           await Navigator.push(
             sheetCtx,
             MaterialPageRoute(builder: (_) => const RegisterPage()),
           );
-          if (sl.storage.isLoggedIn && sheetCtx.mounted) {
-            Navigator.pop(sheetCtx);
-          }
         },
         onGoBack: () {
           Navigator.pop(sheetCtx);
