@@ -53,5 +53,7 @@
 	<string>This app needs access to the camera to scan medical reports.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs access to your photo library to select medical report images.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app needs access to your calendar to schedule and manage appointment reminders.</string>
 </dict>
 </plist>
