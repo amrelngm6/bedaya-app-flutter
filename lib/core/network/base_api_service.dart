@@ -68,6 +68,9 @@ abstract class BaseApiService {
 
       case DioExceptionType.unknown:
         return UnknownException(err.message ?? 'An unexpected error occurred.');
+      case DioExceptionType.transformTimeout:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 
