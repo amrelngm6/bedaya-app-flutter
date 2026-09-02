@@ -15,26 +15,6 @@ workflows:
       cocoapods: default
 
     scripts:
-      - name: Write GoogleService-Info.plist from secret
-        script: |
-          echo $GOOGLE_SERVICE_INFO_PLIST | tr -d ' \n\r' | base64 --decode > $CM_BUILD_DIR/ios/Runner/GoogleService-Info.plist
-
-      - name: Verify GoogleService-Info.plist
-        script: |
-          if [ ! -f "$CM_BUILD_DIR/ios/Runner/GoogleService-Info.plist" ]; then
-            echo "ERROR: GoogleService-Info.plist not found!"
-            exit 1
-          fi
-          # Validate it's a real plist, not a corrupted file
-          if ! plutil -lint $CM_BUILD_DIR/ios/Runner/GoogleService-Info.plist; then
-            echo "ERROR: GoogleService-Info.plist is not a valid plist!"
-            echo "--- File contents ---"
-            cat $CM_BUILD_DIR/ios/Runner/GoogleService-Info.plist
-            exit 1
-          fi
-          echo "GoogleService-Info.plist is valid!"
-          ls -la $CM_BUILD_DIR/ios/Runner/GoogleService-Info.plist
-
       - name: Get Flutter packages
         script: |
           flutter pub get
