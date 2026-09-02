@@ -16,6 +16,7 @@ abstract final class ApiEndpoints {
   static const String changePassword = '/account/change-password';
   static const String myProfile = '/account/profile';
   static const String updateProfile = '/account/profile';
+  static const String deleteAccount = '/account/delete';
   static const String updateAvatar = '/account/profile/avatar';
   static const String appSlides = '/home/slides';
   static const String logout = '/account/logout';

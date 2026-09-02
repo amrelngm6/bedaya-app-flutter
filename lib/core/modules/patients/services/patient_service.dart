@@ -37,6 +37,24 @@ class PatientService extends BaseApiService {
             response.data as String;
       });
 
+  // ─── Update Profile ─────────────────────────────────────────────────────
+  Future<NetworkResult<UserModel>> updatePatientProfile(
+    Map<String, dynamic> updatedData,
+  ) =>
+      execute(() async {
+        final response = await dio.put<Map<String, dynamic>>(
+          ApiEndpoints.updateProfile,
+          data: updatedData,
+        );
+        return UserModel.fromJson(_dataOf(response.data!));
+      });
+
+  
+  // ─── Delete account  ──────────────────────────────────────────────────────
+  Future<NetworkResult<void>> deleteAccount() => execute(() async {
+    await dio.delete<void>(ApiEndpoints.deleteAccount);
+  });
+
   // ─── Medical Records ──────────────────────────────────────────────────────
 
   Future<NetworkResult<PaginatedResponse<MedicalRecordApiModel>>>

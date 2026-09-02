@@ -741,9 +741,7 @@
   "Condition Details": "تفاصيل الحالة",
   "Condition not found": "الحالة غير موجودة",
   "Category": "التصنيف",
-  "Status": "الحالة",
   "Condition Date": "تاريخ الحالة",
-  "Notes": "ملاحظات",
   "Description": "الوصف",
   "Attached Files": "الملفات المرفقة",
   "No files attached": "لا توجد ملفات مرفقة",
@@ -751,6 +749,13 @@
   "condition_status_active": "نشطة",
   "condition_status_resolved": "تم الشفاء",
   "condition_status_chronic": "مزمنة",
-  "condition_status_monitoring": "تحت المتابعة"
+  "condition_status_monitoring": "تحت المتابعة",
+  "Delete Account": "حذف الحساب",
+  "Are you sure you want to delete your account?": "هل أنت متأكد أنك تريد حذف حسابك؟.",
+  "Delete Account Confirmation": "تأكيد حذف الحساب",
+  "An error occurred": "حدث خطأ",
+  "Account deleted successfully, Your information will be removed from our servers within 30 days.": "تم حذف الحساب بنجاح، سيتم إزالة معلوماتك من خوادمنا خلال 30 يومًا.",
+  "Account deletion failed, please try again later.": "فشل حذف الحساب، يرجى المحاولة مرة أخرى لاحقًا."
+
 
 }

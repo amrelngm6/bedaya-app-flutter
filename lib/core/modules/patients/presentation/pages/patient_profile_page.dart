@@ -278,6 +278,22 @@ class _PatientProfilePageState extends State<PatientProfilePage>
                   ),
               ],
             ),
+
+          // Delete account button
+          const SizedBox(height: 24),
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                // Handle delete account action
+                showDeleteAccountConfirmation(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: Text('Delete Account'.tr()),
+            ),
+          ),
         ],
       ),
     );
@@ -568,6 +584,67 @@ class _PatientProfilePageState extends State<PatientProfilePage>
           ],
         ),
       ),
+    );
+  }
+
+  void showDeleteAccountConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Account'.tr()),
+          content: Text('Are you sure you want to delete your account?'.tr()),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'.tr()),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Call the delete account function here
+                sl.patient
+                    .deleteAccount()
+                    .then((result) {
+                      if (result is Success) {
+                        // Handle successful account deletion, e.g., navigate to login page
+                        Navigator.of(
+                          context,
+                        ).pop(); // Go back to previous screen
+
+                        // Handle any unexpected errors
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Account deleted successfully, Your information will be removed from our servers within 30 days.'
+                                  .tr(),
+                            ),
+                          ),
+                        );
+                      } else if (result is Failure) {
+                        // Handle failure, e.g., show an error message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(result.exception.message)),
+                        );
+                      }
+                    })
+                    .catchError((error) {
+                      // Handle any unexpected errors
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('An error occurred'.tr())),
+                      );
+                    });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: Text('Delete'.tr()),
+            ),
+          ],
+        );
+      },
     );
   }
 }
