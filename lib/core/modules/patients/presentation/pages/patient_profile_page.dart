@@ -294,6 +294,7 @@ class _PatientProfilePageState extends State<PatientProfilePage>
               child: Text('Delete Account'.tr()),
             ),
           ),
+          const SizedBox(height: 50),
         ],
       ),
     );
