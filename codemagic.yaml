@@ -15,6 +15,11 @@ workflows:
       cocoapods: default
 
     scripts:
+      - name: Check Firebase plist
+        script: |
+          ls -la ios/Runner/GoogleService-Info.plist
+          cat ios/Runner/GoogleService-Info.plist | grep BUNDLE_ID
+
       - name: Get Flutter packages
         script: |
           flutter pub get
