@@ -36,7 +36,7 @@ class AppConfig {
 
   // ─── App version ─────────────────────────────────────────────────────────────
   /// Current running version of the app (must match pubspec.yaml).
-  static const String currentVersion = '1.1.8+18';
+  static const String currentVersion = '1.1.8+25';
 
   /// Returns `true` when [currentVersion] is lower than [minVersion].
   /// Uses semantic version comparison (major.minor.patch).

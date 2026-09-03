@@ -1,12 +1,16 @@
 // import 'package:bedaya2/core/models/auth_models.dart';
 import 'package:bedaya2/core/config/app_config.dart';
 import 'package:bedaya2/core/di/service_locator.dart';
+import 'package:bedaya2/core/modules/auth/models/auth_models.dart';
 import 'package:bedaya2/core/modules/auth/models/patient_model.dart';
+import 'package:bedaya2/core/modules/auth/presentation/cubits/auth_cubit.dart';
 import 'package:bedaya2/core/modules/patients/models/medical_condition_model.dart';
 import 'package:bedaya2/core/modules/patients/services/image-service.dart';
 import 'package:bedaya2/core/network/network_result.dart';
+import 'package:bedaya2/presentation/widgets/main-navigation.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../theme/colors.dart';
 import '../../../../theme/styles.dart';
@@ -68,42 +72,52 @@ class _PatientProfilePageState extends State<PatientProfilePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.scaffoldBackground,
-      body: CustomScrollView(
-        slivers: [
-          // App Bar with profile header
-          _buildSliverAppBar(),
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state) {
+        UserModel? user = state is AuthAuthenticated ? state.user : null;
+        return user == null
+            ? Center()
+            : Scaffold(
+                backgroundColor: AppColors.scaffoldBackground,
+                body: CustomScrollView(
+                  slivers: [
+                    // App Bar with profile header
+                    _buildSliverAppBar(),
 
-          // Tab Bar
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _SliverAppBarDelegate(
-              TabBar(
-                controller: _tabController,
-                labelColor: AppColors.primaryTeal,
-                unselectedLabelColor: AppColors.textSecondary,
-                labelStyle: AppStyles.h3.copyWith(fontSize: 16),
-                unselectedLabelStyle: AppStyles.bodyMedium,
-                indicatorColor: AppColors.primaryTeal,
-                indicatorWeight: 3,
-                tabs: [
-                  Tab(text: "Personal Info".tr()),
-                  Tab(text: "Medical Profile".tr()),
-                ],
-              ),
-            ),
-          ),
+                    // Tab Bar
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: _SliverAppBarDelegate(
+                        TabBar(
+                          controller: _tabController,
+                          labelColor: AppColors.primaryTeal,
+                          unselectedLabelColor: AppColors.textSecondary,
+                          labelStyle: AppStyles.h3.copyWith(fontSize: 16),
+                          unselectedLabelStyle: AppStyles.bodyMedium,
+                          indicatorColor: AppColors.primaryTeal,
+                          indicatorWeight: 3,
+                          tabs: [
+                            Tab(text: "Personal Info".tr()),
+                            Tab(text: "Medical Profile".tr()),
+                          ],
+                        ),
+                      ),
+                    ),
 
-          // Tab Content
-          SliverFillRemaining(
-            child: TabBarView(
-              controller: _tabController,
-              children: [_buildPersonalInfoTab(), _buildMedicalProfileTab()],
-            ),
-          ),
-        ],
-      ),
+                    // Tab Content
+                    SliverFillRemaining(
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          _buildPersonalInfoTab(),
+                          _buildMedicalProfileTab(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+      },
     );
   }
 
@@ -622,6 +636,18 @@ class _PatientProfilePageState extends State<PatientProfilePage>
                                   .tr(),
                             ),
                           ),
+                        );
+
+                        // Logout
+                        context.read<AuthCubit>().logout();
+                        sl.auth.logout();
+
+                        // Redirect to MainNavigationPage
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => const MainNavigationPage(),
+                          ),
+                          (route) => false,
                         );
                       } else if (result is Failure) {
                         // Handle failure, e.g., show an error message
