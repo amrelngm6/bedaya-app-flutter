@@ -156,7 +156,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
                   child: Column(
                     children: [
                       Text(
-                        'Booking ${appointment.status}!'.tr(),
+                        '${'Booking'.tr()} ${(appointment.status.toLowerCase()).tr()}!',
                         style: AppStyles.h1.copyWith(
                           color: AppColors.primaryTeal,
                           fontSize: 28,
@@ -324,7 +324,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
                 : Icons.video_call,
             'Type'.tr(),
             appointment.bookingType == 'in_person'
-                ? 'In-Person Visit'.tr()
+                ? 'in_person_visit'.tr()
                 : 'Online Consultation'.tr(),
           ),
           const SizedBox(height: 16),
@@ -337,8 +337,10 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
           _buildDetailRow(
             Icons.info_outline,
             'Status'.tr(),
-            appointment.status[0].toUpperCase() +
-                appointment.status.substring(1),
+            (appointment.status[0].toUpperCase() +
+                    appointment.status.substring(1))
+                .toLowerCase()
+                .tr(),
           ),
           if (appointment.meetingLink != null &&
               appointment.meetingLink!.isNotEmpty) ...[

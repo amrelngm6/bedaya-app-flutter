@@ -13,6 +13,7 @@ class AppointmentModel {
     required this.appointmentTime,
     required this.status,
     required this.cost,
+    this.statusId,
     this.meeting,
     this.doctor,
     this.notes,
@@ -37,6 +38,7 @@ class AppointmentModel {
   final String status;
 
   final double cost;
+  final int? statusId;
   final String? notes;
   final String? meetingLink;
   final String? clinicAddress;
@@ -61,7 +63,8 @@ class AppointmentModel {
       appointmentDate: json['scheduled_date'] as String? ?? '',
       appointmentTime: json['start_time'] as String? ?? '',
       status: json['status']['name'] as String? ?? 'pending',
-      cost: (json['doctor']['consultation_fee'] as num?)?.toDouble() ?? 0.0,
+      statusId: json['status']['status_id'] as int?,
+      cost: (json['cost'] as num?)?.toDouble() ?? 0.0,
       notes: json['notes'] as String?,
       meetingLink: json['meeting_link'] as String?,
       clinicAddress: json['clinic_address'] as String?,

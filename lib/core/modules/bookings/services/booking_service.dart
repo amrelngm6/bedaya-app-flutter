@@ -151,6 +151,8 @@ class BookingService extends BaseApiService {
       },
     );
 
+    print(response.data);
+
     late PaginatedResponse<AppointmentModel> res;
     try {
       res = PaginatedResponse.fromJson(

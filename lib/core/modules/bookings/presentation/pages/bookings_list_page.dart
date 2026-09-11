@@ -21,13 +21,9 @@ class BookingsListPage extends StatefulWidget {
 
 class _BookingsListPageState extends State<BookingsListPage>
     with SingleTickerProviderStateMixin {
-  static const _statuses = [
-    'all',
-    'pending',
-    'confirmed',
-    'completed',
-    'cancelled',
-  ];
+  static const _statuses = ['all', 'confirmed', 'completed', 'cancelled'];
+
+  static const _statusesIds = ['', '4', '3', '6'];
 
   late TabController _tabController;
   int _currentTab = 0;
@@ -79,7 +75,9 @@ class _BookingsListPageState extends State<BookingsListPage>
     }
 
     final page = _currentPage[tabIndex] ?? 1;
-    final status = tabIndex == 0 ? null : _statuses[tabIndex];
+    final status = tabIndex == 0 ? null : _statusesIds[tabIndex];
+
+    print(status);
 
     final result = await sl.bookings.getMyBookings(page: page, status: status);
     if (!mounted) return;
@@ -466,7 +464,10 @@ class _AppointmentCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    _StatusChip(status: appointment.status),
+                    _StatusChip(
+                      status: appointment.status,
+                      statusId: appointment.statusId,
+                    ),
                   ],
                 ),
 
@@ -581,24 +582,30 @@ class _DoctorAvatar extends StatelessWidget {
 // ─── Status Chip ─────────────────────────────────────────────────────────────
 
 class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.status});
+  const _StatusChip({required this.status, required this.statusId});
   final String status;
+  final int? statusId;
 
   @override
   Widget build(BuildContext context) {
-    final (color, bgColor, icon) = switch (status) {
-      'confirmed' => (
+    final (color, bgColor, icon) = switch (statusId) {
+      0 => (
+        const Color.fromARGB(255, 125, 46, 46),
+        const Color(0xFFE8F5E9),
+        Icons.error_outline_rounded,
+      ),
+      1 => (
         const Color(0xFF2E7D32),
         const Color(0xFFE8F5E9),
         Icons.check_circle_outline_rounded,
       ),
-      'completed' => (
+      2 => (
         const Color(0xFF1D7885),
         const Color(0xFFE0F7FA),
         Icons.task_alt_rounded,
       ),
-      'cancelled' => (
-        const Color(0xFFC62828),
+      3 => (
+        const Color.fromARGB(255, 40, 135, 198),
         const Color(0xFFFFEBEE),
         Icons.cancel_outlined,
       ),
