@@ -3,7 +3,7 @@ workflows:
     name: Bedaya iOS
 
     integrations:
-      app_store_connect: medians
+      app_store_connect: v1.1
 
     environment:
       ios_signing:
