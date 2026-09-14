@@ -19,6 +19,7 @@ class ChatRoomPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('Opening chat room: ${room.id}');
     return BlocProvider(
       create: (_) => ChatCubit()..loadRoom(room.id),
       child: _ChatRoomView(room: room),

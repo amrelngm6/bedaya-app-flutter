@@ -99,7 +99,9 @@ class ChatService extends BaseApiService {
       ApiEndpoints.chatConversations,
       data: {'subject': subject, 'message': initialMessage},
     );
-    return ChatRoomApiModel.fromJson(_dataOf(response.data!));
+    return ChatRoomApiModel.fromJson(
+      _dataOf(response.data!['data']['room'] ?? response.data),
+    );
   });
 
   /// Sends a text message to a conversation.

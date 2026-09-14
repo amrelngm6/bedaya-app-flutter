@@ -47,9 +47,10 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
   String? _doctorsError;
 
   // Availability slots from API
-  List<AvailabilitySlot> _availabilitySlots = [];
+  List<AvailabilitySlot> availabilitySlots = [];
   bool _isLoadingSlots = false;
-  int? _selectedSlotId;
+  int? selectedSlotId;
+  bool isSelectedDayAvailable = false;
 
   // Submission state
   bool _isSubmitting = false;
@@ -144,8 +145,8 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
     if (_booking.doctorId == null || _booking.selectedDate == null) return;
     setState(() {
       _isLoadingSlots = true;
-      _availabilitySlots = [];
-      _selectedSlotId = null;
+      availabilitySlots = [];
+      selectedSlotId = null;
       _booking.selectedTime = null;
     });
     final date = _booking.selectedDate!;
@@ -165,8 +166,9 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
     switch (result) {
       case Success(:final data):
         setState(() {
-          _availabilitySlots = data;
+          availabilitySlots = data;
           _isLoadingSlots = false;
+          isSelectedDayAvailable = availabilitySlots.isNotEmpty;
         });
       case Failure():
         setState(() => _isLoadingSlots = false);
@@ -266,7 +268,7 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
 
     final request = CreateBookingRequest(
       doctorId: _booking.doctorId!,
-      // slotId: _selectedSlotId!,
+      // slotId: selectedSlotId!,
       cost: _booking.cost,
       serviceId: _booking.serviceId,
       slotId: 1,
@@ -321,7 +323,7 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
         return _booking.isBookingTypeSelected;
       case 2:
         return _booking.selectedDate != null;
-      /**&& _selectedSlotId != null*/
+      /**&& selectedSlotId != null*/
       case 3:
         return true; // Notes are optional
       case 4:
@@ -329,7 +331,7 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
             _booking.isBookingTypeSelected &&
             _booking.selectedDate != null;
       // &&
-      // _selectedSlotId != null;
+      // selectedSlotId != null;
       default:
         return false;
     }
@@ -474,8 +476,8 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
           // Reset schedule when doctor changes
           _booking.selectedDate = null;
           _booking.selectedTime = null;
-          _selectedSlotId = null;
-          _availabilitySlots = [];
+          selectedSlotId = null;
+          availabilitySlots = [];
         });
       },
       child: AnimatedContainer(
@@ -785,6 +787,8 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
     final today = DateTime.now();
     final dates = List.generate(7, (index) => today.add(Duration(days: index)));
 
+    print(dates);
+
     return SizedBox(
       height: 80,
       child: ListView.builder(
@@ -892,30 +896,42 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
       );
     }
 
-    if (_availabilitySlots.isEmpty ||
-        _booking.bookingType == BookingType.online) {
+    if (!isSelectedDayAvailable) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
           child: Text(
-            'Time will be defined and we will inform you'.tr(),
+            'Booking is not available for the selected day'.tr(),
             style: AppStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: const Color.fromARGB(255, 192, 0, 0),
             ),
           ),
         ),
       );
     }
 
-    return _buildTimeSlotGrid(_availabilitySlots);
-  }
+    // if (availabilitySlots.isEmpty ||
+    //     _booking.bookingType == BookingType.online) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Text(
+          'Time will be defined and we will inform you'.tr(),
+          style: AppStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+        ),
+      ),
+    );
+    // }
 
+    // return _buildTimeSlotGrid(availabilitySlots);
+  }
+  /*
   Widget _buildTimeSlotGrid(List<AvailabilitySlot> slots) {
     return Wrap(
       spacing: 12,
       runSpacing: 12,
       children: slots.map((slot) {
-        final isSelected = _selectedSlotId == slot.slotId;
+        final isSelected = selectedSlotId == slot.slotId;
         final displayTime = slot.startTime.length >= 5
             ? slot.startTime.substring(0, 5)
             : slot.startTime;
@@ -924,7 +940,7 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
               // slot.isAvailable ?
               () {
                 setState(() {
-                  _selectedSlotId = slot.slotId;
+                  selectedSlotId = slot.slotId;
                   _booking.selectedTime = displayTime;
                 });
               },
@@ -964,6 +980,7 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
       }).toList(),
     );
   }
+  */
 
   Widget _buildNotesSection() {
     return FadeTransition(
@@ -1251,9 +1268,9 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
       );
 
       // Reset slot when visit type changes
-      _selectedSlotId = null;
+      selectedSlotId = null;
       _booking.selectedTime = null;
-      _availabilitySlots = [];
+      availabilitySlots = [];
     });
     // Reload slots if a date was already selected
     if (_booking.selectedDate != null) {

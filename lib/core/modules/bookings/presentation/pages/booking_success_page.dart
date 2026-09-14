@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+// import 'package:qr_flutter/qr_flutter.dart';
 import 'package:bedaya2/core/modules/bookings/models/appointment_model.dart';
 import 'package:bedaya2/core/theme/colors.dart';
 import 'package:bedaya2/core/theme/styles.dart';
@@ -124,10 +124,10 @@ class _BookingSuccessPageState extends State<BookingSuccessPage>
                     ),
                   ),
                   const SizedBox(height: 40),
-                  FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: _buildQRCodeWidget(),
-                  ),
+                  // FadeTransition(
+                  //   opacity: _fadeAnimation,
+                  //   child: _buildQRCodeWidget(),
+                  // ),
                   const SizedBox(height: 24),
                   FadeTransition(
                     opacity: _fadeAnimation,
@@ -399,6 +399,7 @@ class _BookingSuccessPageState extends State<BookingSuccessPage>
     }
   }
 
+  /*
   Widget _buildQRCodeWidget() {
     final qrData =
         'BEDAYA_BOOKING|ID:${widget.appointment.id}'
@@ -587,6 +588,7 @@ class _BookingSuccessPageState extends State<BookingSuccessPage>
       ),
     );
   }
+  */
 
   Widget _buildActionButtons() {
     return Column(

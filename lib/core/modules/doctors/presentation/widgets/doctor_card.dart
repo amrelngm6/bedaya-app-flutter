@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:bedaya2/core/theme/colors.dart';
@@ -7,6 +8,7 @@ import 'package:bedaya2/core/modules/doctors/presentation/pages/doctor_details_p
 import 'package:bedaya2/core/modules/doctors/models/doctor_model.dart';
 
 import 'package:bedaya2/core/modules/bookings/presentation/pages/booking_appointment_page.dart';
+import 'package:html2md/html2md.dart' as html2md;
 
 // ignore: must_be_immutable
 class DoctorCard extends StatelessWidget {
@@ -110,7 +112,7 @@ class DoctorCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       if (doctor.bio != null && doctor.bio!.isNotEmpty) ...[
                         Text(
-                          "${doctor.bio}",
+                          html2md.convert(doctor.bio!),
                           style: AppStyles.bodySmall,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
