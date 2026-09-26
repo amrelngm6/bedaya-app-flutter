@@ -322,13 +322,13 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
       case 1:
         return _booking.isBookingTypeSelected;
       case 2:
-        return _booking.selectedDate != null;
-      /**&& selectedSlotId != null*/
+        return isSelectedDayAvailable && _booking.selectedDate != null;
       case 3:
         return true; // Notes are optional
       case 4:
         return _booking.isDoctorSelected &&
             _booking.isBookingTypeSelected &&
+            isSelectedDayAvailable &&
             _booking.selectedDate != null;
       // &&
       // selectedSlotId != null;
@@ -912,20 +912,20 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
 
     // if (availabilitySlots.isEmpty ||
     //     _booking.bookingType == BookingType.online) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        child: Text(
-          'Time will be defined and we will inform you'.tr(),
-          style: AppStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
-        ),
-      ),
-    );
+    // return Center(
+    //   child: Padding(
+    //     padding: const EdgeInsets.symmetric(vertical: 24),
+    //     child: Text(
+    //       'Time will be defined and we will inform you'.tr(),
+    //       style: AppStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+    //     ),
+    //   ),
+    // );
     // }
 
-    // return _buildTimeSlotGrid(availabilitySlots);
+    return _buildTimeSlotGrid(availabilitySlots);
   }
-  /*
+
   Widget _buildTimeSlotGrid(List<AvailabilitySlot> slots) {
     return Wrap(
       spacing: 12,
@@ -980,7 +980,6 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
       }).toList(),
     );
   }
-  */
 
   Widget _buildNotesSection() {
     return FadeTransition(

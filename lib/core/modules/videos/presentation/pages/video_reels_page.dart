@@ -3,9 +3,9 @@ import 'package:bedaya2/core/modules/auth/presentation/pages/register_page.dart'
 import 'package:bedaya2/core/modules/bookings/presentation/widgets/auth_required_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 import 'package:bedaya2/core/di/service_locator.dart';
 import 'package:bedaya2/core/modules/videos/models/video_model.dart';
+import 'package:bedaya2/core/modules/videos/presentation/widgets/smart_video_player.dart';
 import 'package:bedaya2/core/network/network_result.dart';
 import 'package:bedaya2/core/theme/colors.dart';
 import 'package:bedaya2/core/theme/styles.dart';
@@ -202,6 +202,7 @@ class _VideoReelsPageState extends State<VideoReelsPage> {
           return VideoReelItem(
             videoItem: _videos[index],
             isCurrentPage: index == _currentIndex,
+            onNextVideo: () => _currentIndex + 1,
           );
         },
       ),
@@ -216,11 +217,13 @@ class _VideoReelsPageState extends State<VideoReelsPage> {
 class VideoReelItem extends StatefulWidget {
   final VideoApiModel videoItem;
   final bool isCurrentPage;
+  final Function onNextVideo;
 
   const VideoReelItem({
     super.key,
     required this.videoItem,
     required this.isCurrentPage,
+    required this.onNextVideo,
   });
 
   @override
@@ -228,68 +231,36 @@ class VideoReelItem extends StatefulWidget {
 }
 
 class _VideoReelItemState extends State<VideoReelItem> {
-  late VideoPlayerController _controller;
+  final GlobalKey<SmartVideoPlayerState> _playerKey =
+      GlobalKey<SmartVideoPlayerState>();
   bool _isInitialized = false;
   late bool _isLiked;
   late int _likesCount;
   bool _showControls = false;
-  bool _descriptionExpanded = false;
+  // bool _descriptionExpanded = false;
 
   @override
   void initState() {
     super.initState();
     _isLiked = widget.videoItem.isLikedByMe;
     _likesCount = widget.videoItem.likesCount;
-    _initializeVideo();
-  }
-
-  Future<void> _initializeVideo() async {
-    _controller = VideoPlayerController.networkUrl(
-      Uri.parse(widget.videoItem.videoUrl),
-    );
-
-    try {
-      await _controller.initialize();
-      _controller.setLooping(true);
-
-      if (mounted) {
-        setState(() => _isInitialized = true);
-        if (widget.isCurrentPage) _controller.play();
-      }
-    } catch (e) {
-      debugPrint('Error initializing video: $e');
-    }
-
-    _controller.addListener(() {
-      if (mounted) setState(() {});
-    });
   }
 
   @override
   void didUpdateWidget(VideoReelItem oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.isCurrentPage && !oldWidget.isCurrentPage) {
-      _controller.play();
+      _playerKey.currentState?.play();
     } else if (!widget.isCurrentPage && oldWidget.isCurrentPage) {
-      _controller.pause();
+      _playerKey.currentState?.pause();
     }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   // ── Controls ──────────────────────────────────────────────────────────────
 
   void _togglePlayPause() {
     setState(() {
-      if (_controller.value.isPlaying) {
-        _controller.pause();
-      } else {
-        _controller.play();
-      }
+      _playerKey.currentState?.togglePlayPause();
       _showControls = true;
     });
 
@@ -386,7 +357,7 @@ class _VideoReelItemState extends State<VideoReelItem> {
     }
 
     // Pause the video while comments are open
-    _controller.pause();
+    _playerKey.currentState?.pause();
 
     showModalBottomSheet(
       context: context,
@@ -397,7 +368,7 @@ class _VideoReelItemState extends State<VideoReelItem> {
         commentsCount: widget.videoItem.commentsCount,
       ),
     ).then((_) {
-      if (widget.isCurrentPage && mounted) _controller.play();
+      if (widget.isCurrentPage && mounted) _playerKey.currentState?.play();
     });
   }
 
@@ -406,20 +377,27 @@ class _VideoReelItemState extends State<VideoReelItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: _togglePlayPause,
       child: Stack(
         fit: StackFit.expand,
         children: [
           // ── Video player ──────────────────────────────────────────────
-          if (_isInitialized)
-            Center(
-              child: AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
-              ),
-            )
-          else
-            _buildLoadingPlaceholder(),
+          Center(
+            child: SmartVideoPlayer(
+              key: _playerKey,
+              videoUrl: widget.videoItem.playbackUrl,
+              autoPlay: widget.isCurrentPage,
+              looping: true,
+              onReady: () {
+                if (mounted) setState(() => _isInitialized = true);
+              },
+              onPlayingChanged: (_) {
+                if (mounted) setState(() {});
+              },
+            ),
+          ),
+          if (!_isInitialized) _buildLoadingPlaceholder(),
 
           // ── Gradient overlay ──────────────────────────────────────────
           Container(
@@ -517,89 +495,6 @@ class _VideoReelItemState extends State<VideoReelItem> {
             ),
           ),
 
-          // ── Bottom info (title + description) ─────────────────────────
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 80,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Channel avatar + name
-                    Row(
-                      children: [
-                        const CircleAvatar(
-                          radius: 16,
-                          backgroundImage: NetworkImage(
-                            'https://cdn-icons-png.flaticon.com/512/3063/3063205.png',
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'bedaya_hospital'.tr(),
-                          style: AppStyles.bodyMedium.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-
-                    // Title
-                    Text(
-                      widget.videoItem.title,
-                      style: AppStyles.h3.copyWith(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-
-                    // Description with read more / less
-                    GestureDetector(
-                      onTap: () => setState(
-                        () => _descriptionExpanded = !_descriptionExpanded,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.videoItem.description,
-                            style: AppStyles.bodyMedium.copyWith(
-                              color: Colors.white70,
-                            ),
-                            maxLines: _descriptionExpanded ? null : 2,
-                            overflow: _descriptionExpanded
-                                ? TextOverflow.visible
-                                : TextOverflow.ellipsis,
-                          ),
-                          if (widget.videoItem.description.length > 80)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Text(
-                                _descriptionExpanded
-                                    ? 'read_less'.tr()
-                                    : 'read_more'.tr(),
-                                style: AppStyles.bodySmall.copyWith(
-                                  color: AppColors.primaryTeal,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
           // ── Play / Pause overlay ──────────────────────────────────────
           if (_showControls && _isInitialized)
             Center(
@@ -610,7 +505,9 @@ class _VideoReelItemState extends State<VideoReelItem> {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                  (_playerKey.currentState?.isPlaying ?? false)
+                      ? Icons.pause
+                      : Icons.play_arrow,
                   color: Colors.white,
                   size: 50,
                 ),

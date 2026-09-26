@@ -111,7 +111,11 @@ class DoctorCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       if (doctor.bio != null && doctor.bio!.isNotEmpty) ...[
                         Text(
-                          html2md.convert(doctor.bio!),
+                          html2md.convert(
+                            context.locale == Locale('ar')
+                                ? doctor.bioArabic!
+                                : doctor.bio!,
+                          ),
                           style: AppStyles.bodySmall,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,

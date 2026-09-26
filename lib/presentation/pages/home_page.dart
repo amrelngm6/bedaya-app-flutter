@@ -273,9 +273,7 @@ class _HomePageState extends State<HomePage> {
             ? WelcomeProfile(patient: myProfile)
             : SizedBox.shrink();
       case 'videos':
-        return VideosSection(
-          videosPostersList: _videos.map((v) => v.thumbnailUrl!).toList(),
-        );
+        return VideosSection(videosList: _videos);
       case 'doctors':
         return doctorsListSlider();
       case 'calculator':

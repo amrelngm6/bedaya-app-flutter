@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import '../../../../theme/colors.dart';
 import '../../../../theme/styles.dart';
+import '../../models/video_model.dart';
+import 'smart_video_player.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
@@ -18,50 +20,14 @@ class VideoPlayerWidget extends StatefulWidget {
 }
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  late VideoPlayerController _controller;
-  bool _isInitialized = false;
+  final GlobalKey<SmartVideoPlayerState> _playerKey =
+      GlobalKey<SmartVideoPlayerState>();
   bool _showControls = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _initializeVideo();
-  }
-
-  Future<void> _initializeVideo() async {
-    try {
-      _controller = VideoPlayerController.networkUrl(
-        Uri.parse(widget.videoUrl),
-      );
-
-      await _controller.initialize();
-      setState(() {
-        _isInitialized = true;
-      });
-
-      _controller.addListener(() {
-        setState(() {});
-      });
-    } catch (e) {
-      // Handle video initialization errors
-      return;
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  bool get _isYoutube => VideoUrlUtils.isYoutubeUrl(widget.videoUrl);
 
   void _togglePlayPause() {
-    setState(() {
-      if (_controller.value.isPlaying) {
-        _controller.pause();
-      } else {
-        _controller.play();
-      }
-    });
+    setState(() => _playerKey.currentState?.togglePlayPause());
   }
 
   String _formatDuration(Duration duration) {
@@ -89,42 +55,48 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: GestureDetector(
-        onTap: () {
-          setState(() {
-            _showControls = !_showControls;
-          });
-          Future.delayed(const Duration(seconds: 3), () {
-            if (mounted && _controller.value.isPlaying) {
-              setState(() {
-                _showControls = false;
-              });
-            }
-          });
-        },
-        child: Center(
-          child: _isInitialized
-              ? Stack(
+      // YouTube videos rely on their own native controls; direct uploads use
+      // the custom overlay controls below.
+      body: _isYoutube
+          ? Center(
+              child: SmartVideoPlayer(
+                key: _playerKey,
+                videoUrl: widget.videoUrl,
+              ),
+            )
+          : GestureDetector(
+              onTap: () {
+                setState(() {
+                  _showControls = !_showControls;
+                });
+                Future.delayed(const Duration(seconds: 3), () {
+                  final player = _playerKey.currentState;
+                  if (mounted && (player?.isPlaying ?? false)) {
+                    setState(() {
+                      _showControls = false;
+                    });
+                  }
+                });
+              },
+              child: Center(
+                child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    AspectRatio(
-                      aspectRatio: _controller.value.aspectRatio,
-                      child: VideoPlayer(_controller),
+                    SmartVideoPlayer(
+                      key: _playerKey,
+                      videoUrl: widget.videoUrl,
                     ),
                     if (_showControls) _buildControls(),
                   ],
-                )
-              : const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    AppColors.primaryTeal,
-                  ),
                 ),
-        ),
-      ),
+              ),
+            ),
     );
   }
 
   Widget _buildControls() {
+    final player = _playerKey.currentState;
+    final controller = player?.rawVideoController;
     return AnimatedOpacity(
       opacity: _showControls ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 300),
@@ -138,7 +110,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               child: IconButton(
                 iconSize: 64,
                 icon: Icon(
-                  _controller.value.isPlaying
+                  (player?.isPlaying ?? false)
                       ? Icons.pause_circle_filled
                       : Icons.play_circle_filled,
                   color: Colors.white,
@@ -148,40 +120,41 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             ),
             const Spacer(),
             // Progress bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  VideoProgressIndicator(
-                    _controller,
-                    allowScrubbing: true,
-                    colors: const VideoProgressColors(
-                      playedColor: AppColors.primaryTeal,
-                      bufferedColor: Colors.grey,
-                      backgroundColor: Colors.white24,
+            if (controller != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    VideoProgressIndicator(
+                      controller,
+                      allowScrubbing: true,
+                      colors: const VideoProgressColors(
+                        playedColor: AppColors.primaryTeal,
+                        bufferedColor: Colors.grey,
+                        backgroundColor: Colors.white24,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        _formatDuration(_controller.value.position),
-                        style: AppStyles.bodySmall.copyWith(
-                          color: Colors.white,
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _formatDuration(player!.position),
+                          style: AppStyles.bodySmall.copyWith(
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      Text(
-                        _formatDuration(_controller.value.duration),
-                        style: AppStyles.bodySmall.copyWith(
-                          color: Colors.white,
+                        Text(
+                          _formatDuration(player.duration),
+                          style: AppStyles.bodySmall.copyWith(
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
             const SizedBox(height: 20),
           ],
         ),

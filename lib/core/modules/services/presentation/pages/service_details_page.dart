@@ -6,7 +6,7 @@ import 'package:bedaya2/core/theme/colors.dart';
 import 'package:bedaya2/core/theme/styles.dart';
 import 'package:bedaya2/presentation/widgets/success_story_card.dart';
 import 'package:bedaya2/core/modules/videos/presentation/widgets/video_player_widget.dart';
-import 'package:bedaya2/presentation/widgets/photo_gallery_widget.dart';
+// import 'package:bedaya2/presentation/widgets/photo_gallery_widget.dart';
 import 'package:bedaya2/core/modules/services/presentation/widgets/service_feature_card.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:html2md/html2md.dart' as html2md;
@@ -262,10 +262,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage>
         indicatorWeight: 3,
         labelStyle: AppStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
         tabs: [
-          Tab(text: 'overview'.tr()),
-          Tab(text: 'gallery'.tr()),
+          Tab(text: 'Details'.tr()),
+          // Tab(text: 'gallery'.tr()),
           Tab(text: 'videos'.tr()),
-          Tab(text: 'stories'.tr()),
+          Tab(text: 'Success Stories'.tr()),
         ],
       ),
     );
@@ -278,7 +278,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage>
         controller: _tabController,
         children: [
           _buildOverviewTab(),
-          _buildGalleryTab(),
+          // _buildGalleryTab(),
           _buildVideosTab(),
           _buildSuccessStoriesTab(),
         ],
@@ -399,9 +399,9 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage>
     );
   }
 
-  Widget _buildGalleryTab() {
-    return PhotoGalleryWidget(photos: const []);
-  }
+  // Widget _buildGalleryTab() {
+  //   return PhotoGalleryWidget(photos: const []);
+  // }
 
   Widget _buildVideosTab() {
     return Container(

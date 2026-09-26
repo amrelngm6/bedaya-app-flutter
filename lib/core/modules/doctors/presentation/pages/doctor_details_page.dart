@@ -150,7 +150,7 @@ class _DoctorDetailsPageState extends State<DoctorDetailsPage> {
             const SizedBox(height: 8),
             Text(
               html2md.convert(
-                "${(Locale("ar") == Localizations.localeOf(context) ? doc.bioArabic : doc.bio)}",
+                "${(context.locale == Locale('ar') ? doc.bioArabic : doc.bio)}",
               ),
               style: AppStyles.bodyMedium.copyWith(height: 1.5),
             ),
