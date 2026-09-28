@@ -271,7 +271,9 @@ class _BookingSuccessPageState extends State<BookingSuccessPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.appointment.doctorName,
+                      Localizations.localeOf(context).languageCode == 'ar'
+                          ? widget.appointment.doctorArabicName
+                          : widget.appointment.doctorName,
                       style: AppStyles.h3.copyWith(fontSize: 18),
                     ),
                     const SizedBox(height: 4),
@@ -593,35 +595,35 @@ class _BookingSuccessPageState extends State<BookingSuccessPage>
   Widget _buildActionButtons() {
     return Column(
       children: [
-        SizedBox(
-          width: double.infinity,
-          height: 56,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              // Add to calendar
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Added to calendar'.tr()),
-                  backgroundColor: AppColors.onlineGreen,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              );
-            },
-            icon: const Icon(Icons.calendar_today),
-            label: Text('Add to Calendar'.tr(), style: AppStyles.buttonText),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryTeal,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              elevation: 4,
-            ),
-          ),
-        ),
+        // SizedBox(
+        //   width: double.infinity,
+        //   height: 56,
+        //   child: ElevatedButton.icon(
+        //     onPressed: () {
+        //       // Add to calendar
+        //       ScaffoldMessenger.of(context).showSnackBar(
+        //         SnackBar(
+        //           content: Text('Added to calendar'.tr()),
+        //           backgroundColor: AppColors.onlineGreen,
+        //           behavior: SnackBarBehavior.floating,
+        //           shape: RoundedRectangleBorder(
+        //             borderRadius: BorderRadius.circular(10),
+        //           ),
+        //         ),
+        //       );
+        //     },
+        //     icon: const Icon(Icons.calendar_today),
+        //     label: Text('Add to Calendar'.tr(), style: AppStyles.buttonText),
+        //     style: ElevatedButton.styleFrom(
+        //       backgroundColor: AppColors.primaryTeal,
+        //       foregroundColor: Colors.white,
+        //       shape: RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.circular(30),
+        //       ),
+        //       elevation: 4,
+        //     ),
+        //   ),
+        // ),
         const SizedBox(height: 16),
         SizedBox(
           width: double.infinity,

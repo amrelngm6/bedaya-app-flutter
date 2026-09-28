@@ -4,7 +4,7 @@ import 'package:bedaya2/core/modules/doctors/presentation/pages/doctor_details_p
 import 'package:bedaya2/core/modules/meetings/presentation/widgets/meeting_card.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+// import 'package:qr_flutter/qr_flutter.dart';
 import 'package:bedaya2/core/theme/colors.dart';
 import 'package:bedaya2/core/theme/styles.dart';
 
@@ -286,7 +286,9 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        appointment.doctorName,
+                        Localizations.localeOf(context).languageCode == 'ar'
+                            ? appointment.doctorArabicName
+                            : appointment.doctorName,
                         style: AppStyles.h3.copyWith(fontSize: 18),
                       ),
                       const SizedBox(height: 4),
@@ -425,12 +427,12 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
   }
 
   Widget _buildQRCodeWidget() {
-    final qrData =
-        'BEDAYA_BOOKING|ID:${appointment.id}'
-        '|DR:${appointment.doctorName}'
-        '|DATE:${appointment.appointmentDate}'
-        '|TIME:${appointment.appointmentTime}'
-        '|TYPE:${appointment.bookingType.toUpperCase()}';
+    // final qrData =
+    //     'BEDAYA_BOOKING|ID:${appointment.id}'
+    //     '|DR:${appointment.doctorName}'
+    //     '|DATE:${appointment.appointmentDate}'
+    //     '|TIME:${appointment.appointmentTime}'
+    //     '|TYPE:${appointment.bookingType.toUpperCase()}';
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -458,35 +460,35 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
         children: [
           Row(
             children: [
-              Icon(
-                Icons.qr_code_scanner,
-                color: AppColors.primaryTeal,
-                size: 28,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'QR Code'.tr(),
-                      style: AppStyles.h3.copyWith(
-                        color: AppColors.primaryTeal,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      widget.appointment.isOnline
-                          ? ''
-                          : 'Scan on arrival for check-in'.tr(),
-                      style: AppStyles.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Icon(
+              //   Icons.qr_code_scanner,
+              //   color: AppColors.primaryTeal,
+              //   size: 28,
+              // ),
+              // const SizedBox(width: 12),
+              // Expanded(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Text(
+              //         'QR Code'.tr(),
+              //         style: AppStyles.h3.copyWith(
+              //           color: AppColors.primaryTeal,
+              //           fontSize: 18,
+              //         ),
+              //       ),
+              //       const SizedBox(height: 4),
+              //       Text(
+              //         widget.appointment.isOnline
+              //             ? ''
+              //             : 'Scan on arrival for check-in'.tr(),
+              //         style: AppStyles.bodySmall.copyWith(
+              //           color: AppColors.textSecondary,
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
           const SizedBox(height: 20),
@@ -501,23 +503,23 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
             ),
             child: Column(
               children: [
-                QrImageView(
-                  data: qrData,
-                  version: QrVersions.auto,
-                  size: 220,
-                  backgroundColor: Colors.white,
-                  errorStateBuilder: (cxt, err) {
-                    return Container(
-                      width: 220,
-                      height: 220,
-                      alignment: Alignment.center,
-                      child: Text(
-                        'QR Code Error'.tr(),
-                        style: AppStyles.bodySmall,
-                      ),
-                    );
-                  },
-                ),
+                // QrImageView(
+                //   data: qrData,
+                //   version: QrVersions.auto,
+                //   size: 220,
+                //   backgroundColor: Colors.white,
+                //   errorStateBuilder: (cxt, err) {
+                //     return Container(
+                //       width: 220,
+                //       height: 220,
+                //       alignment: Alignment.center,
+                //       child: Text(
+                //         'QR Code Error'.tr(),
+                //         style: AppStyles.bodySmall,
+                //       ),
+                //     );
+                //   },
+                // ),
                 const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -584,7 +586,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
                 _buildQRInfoItem('Arrive 15 minutes before your appointment'),
                 _buildQRInfoItem('Scan QR code at reception desk'),
                 // _buildQRInfoItem('Keep this code accessible on your device'),
-                _buildQRInfoItem('Screenshot recommended for offline access'),
+                // _buildQRInfoItem('Screenshot recommended for offline access'),
               ],
             ),
           ),

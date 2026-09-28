@@ -105,12 +105,12 @@ class HospitalServiceApiModel {
               .map(ServiceVideoApiModel.fromJson)
               .toList() ??
           [],
-      successStories:
-          (json['success_stories'] as List<dynamic>?)
-              ?.whereType<Map<String, dynamic>>()
-              .map(SuccessStoryApiModel.fromJson)
-              .toList() ??
-          [],
+      // successStories:
+      //     (json['success_stories'] as List<dynamic>?)
+      //         ?.whereType<Map<String, dynamic>>()
+      //         .map(SuccessStoryApiModel.fromJson)
+      //         .toList() ??
+      //     [],
       isHighlighted: json['is_highlighted'] as bool? ?? false,
     );
   }

@@ -1,3 +1,4 @@
+import 'package:bedaya2/presentation/widgets/main-navigation.dart';
 import 'package:bedaya2/core/modules/services/models/hospital_service_model.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +83,10 @@ class _ServicesListPageState extends State<ServicesListPage>
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MainNavigationPage()),
+          ),
         ),
         title: Text(
           'Our Services'.tr(),

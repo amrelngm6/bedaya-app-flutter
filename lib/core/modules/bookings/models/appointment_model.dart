@@ -6,6 +6,7 @@ class AppointmentModel {
     required this.id,
     required this.doctorId,
     required this.doctorName,
+    required this.doctorArabicName,
     required this.doctorSpecialty,
     required this.doctorImageUrl,
     required this.bookingType,
@@ -26,6 +27,7 @@ class AppointmentModel {
   final int id;
   final int doctorId;
   final String doctorName;
+  final String doctorArabicName;
   final String doctorSpecialty;
   final String doctorImageUrl;
 
@@ -57,6 +59,7 @@ class AppointmentModel {
       id: json['id'] as int,
       doctorId: json['doctor']['id'] as int? ?? 0,
       doctorName: json['doctor']['name'] as String? ?? '',
+      doctorArabicName: json['doctor']['arabic_name'] as String? ?? '',
       doctorSpecialty: json['doctor']['category']['name'] as String? ?? '',
       doctorImageUrl: json['doctor']['picture'] as String? ?? '',
       bookingType: json['booking_type'] as String? ?? 'in_person',

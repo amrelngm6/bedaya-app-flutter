@@ -248,7 +248,9 @@ class MeetingCard extends StatelessWidget {
       final meetingDateTime = DateTime.parse('$date ${meeting!.selectedTime}');
       final now = DateTime.now();
       if (now.isBefore(meetingDateTime) &&
-          !now.isAfter(meetingDateTime.subtract(const Duration(minutes: 10)))) {
+          !now.isAfter(
+            meetingDateTime.subtract(const Duration(minutes: 300)),
+          )) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             duration: const Duration(seconds: 10),

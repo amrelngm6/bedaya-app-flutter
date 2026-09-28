@@ -1,6 +1,7 @@
 import 'package:bedaya2/core/di/service_locator.dart';
 import 'package:bedaya2/core/modules/doctors/models/doctor_category.dart';
 import 'package:bedaya2/core/network/network_result.dart';
+import 'package:bedaya2/presentation/widgets/main-navigation.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:bedaya2/core/theme/colors.dart';
@@ -123,7 +124,10 @@ class _DoctorsListPageState extends State<DoctorsListPage>
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MainNavigationPage()),
+          ),
         ),
         title: Text(
           'Our Doctors'.tr(),

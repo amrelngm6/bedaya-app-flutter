@@ -16,6 +16,7 @@ class AppointmentCard extends StatelessWidget {
         id: 0,
         doctorId: 1,
         doctorName: '',
+        doctorArabicName: '',
         doctorSpecialty: '',
         doctorImageUrl:
             'https://bedayahospitals.com/uploads/images/ismail-abo-alfotouh-673415398a562.webp',
@@ -180,7 +181,9 @@ class AppointmentCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          appointment!.doctorName,
+                          Localizations.localeOf(context).languageCode == 'ar'
+                              ? appointment!.doctorArabicName
+                              : appointment!.doctorName,
                           style: AppStyles.h3.copyWith(fontSize: 14),
                         ),
                         Text(

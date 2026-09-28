@@ -470,7 +470,10 @@ class _BookingAppointmentPageState extends State<BookingAppointmentPage>
         setState(() {
           selectedDoctor = doctor;
           _booking.doctorId = doctor.id;
-          _booking.doctorName = doctor.name;
+          _booking.doctorName =
+              Localizations.localeOf(context).languageCode == 'ar'
+              ? doctor.arabicName
+              : doctor.name;
           _booking.doctorSpecialty = doctor.specialty;
           _booking.doctorImageUrl = doctor.imageUrl;
           // Reset schedule when doctor changes
