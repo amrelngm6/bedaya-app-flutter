@@ -1,3 +1,4 @@
+import 'package:bedaya2/core/modules/doctors/models/doctor_category.dart';
 import 'package:bedaya2/core/modules/doctors/models/doctor_service.dart';
 
 class DoctorApiModel {
@@ -13,6 +14,7 @@ class DoctorApiModel {
     required this.reviewsCount,
     required this.experienceYears,
     required this.consultationFee,
+    this.category,
     this.bio,
     this.bioArabic,
     this.languages,
@@ -43,9 +45,18 @@ class DoctorApiModel {
   final String? nextAvailableSlot;
   bool? isLikedByMe;
   List<DoctorService>? services;
+  final DoctorCategory? category;
   bool? hasOnlineBooking;
 
   factory DoctorApiModel.fromJson(Map<String, dynamic> json) {
+    final category = json['category'] != null
+        ? DoctorCategory(
+            id: (json['category']['category_id'] ?? 0) as int,
+            name: json['category']['name'] as String? ?? '',
+            arabicName: json['category']['arabic_name'] as String? ?? '',
+          )
+        : null;
+
     return DoctorApiModel(
       id: (json['doctor_id'] ?? json['id']) as int,
       name: json['name'] as String? ?? '',
@@ -56,9 +67,7 @@ class DoctorApiModel {
       arabicSpecialty: json['category'] != null
           ? json['category']['arabic_name'] as String
           : '',
-      categoryId: json['category'] != null
-          ? (json['category']['category_id'] ?? 0) as int
-          : 0,
+      categoryId: category?.id ?? 0,
       imageUrl: json['picture'] as String? ?? '',
       rating: double.tryParse(json['rating']?.toString() ?? '0.0') ?? 0.0,
       reviewsCount: json['reviews_count'] as int? ?? 160,

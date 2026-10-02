@@ -6,6 +6,7 @@ import 'package:bedaya2/core/modules/auth/models/patient_model.dart';
 import 'package:bedaya2/core/modules/bookings/presentation/pages/bookings_list_page.dart';
 import 'package:bedaya2/core/modules/chat/presentation/pages/chat_rooms_page.dart';
 import 'package:bedaya2/core/modules/invoices/presentation/pages/invoices_page.dart';
+import 'package:bedaya2/core/modules/offers/presentation/pages/offers_list_page.dart';
 import 'package:bedaya2/core/modules/notifications/presentation/pages/notifications_page.dart';
 import 'package:bedaya2/core/modules/patients/presentation/pages/patient_profile_page.dart';
 import 'package:bedaya2/core/modules/services/presentation/pages/services_list_page.dart';
@@ -72,6 +73,15 @@ class SideMenu extends StatelessWidget {
                             onTap: () {
                               _navigate(context, InvoicesPage());
                             },
+                          )
+                        : const SizedBox.shrink(),
+
+                    (user != null)
+                        ? _MenuItem(
+                            icon: Icons.local_offer_outlined,
+                            label: 'Offers'.tr(),
+                            onTap: () =>
+                                _navigate(context, const OffersListPage()),
                           )
                         : const SizedBox.shrink(),
 

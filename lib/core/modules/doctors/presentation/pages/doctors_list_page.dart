@@ -27,14 +27,15 @@ class _DoctorsListPageState extends State<DoctorsListPage>
   bool _isLoadingCategories = true;
   String? _categoriesError;
 
-  final Map<String, List<DoctorApiModel>?> _doctorsByCategory = {};
-  final Map<String, bool> _loadingDoctors = {};
-  final Map<String, String?> _doctorErrors = {};
+  List<DoctorApiModel> _allDoctors = [];
+  bool _isLoadingDoctors = true;
+  String? _doctorsError;
 
   @override
   void initState() {
     super.initState();
     _loadCategories();
+    _loadAllDoctors();
     sl.analytics.trackScreen('DoctorsListPage');
   }
 
@@ -43,9 +44,6 @@ class _DoctorsListPageState extends State<DoctorsListPage>
     _tabController?.dispose();
     super.dispose();
   }
-
-  String _categoryKey(DoctorCategory category) =>
-      category.id == 0 ? 'all' : category.id.toString();
 
   Future<void> _loadCategories() async {
     setState(() {
@@ -69,14 +67,12 @@ class _DoctorsListPageState extends State<DoctorsListPage>
           ..addListener(() {
             if (_tabController!.indexIsChanging) {
               setState(() => _currentTabIndex = _tabController!.index);
-              _loadDoctorsForCategory(categories[_tabController!.index]);
             }
           });
         setState(() {
           _categories = categories;
           _isLoadingCategories = false;
         });
-        _loadDoctorsForCategory(categories.first);
       case Failure(:final exception):
         setState(() {
           _isLoadingCategories = false;
@@ -85,34 +81,36 @@ class _DoctorsListPageState extends State<DoctorsListPage>
     }
   }
 
-  Future<void> _loadDoctorsForCategory(DoctorCategory category) async {
-    final key = _categoryKey(category);
-    if (_doctorsByCategory[key] != null) return;
-    if (_loadingDoctors[key] == true) return;
-
+  // Fetches every doctor once; tabs then filter this single list by category.
+  Future<void> _loadAllDoctors() async {
     setState(() {
-      _loadingDoctors[key] = true;
-      _doctorErrors[key] = null;
+      _isLoadingDoctors = true;
+      _doctorsError = null;
     });
 
-    final result = await sl.doctors.getDoctors(
-      categoryId: category.id == 0 ? null : category.id.toString(),
-    );
+    final result = await sl.doctors.getDoctors(perPage: 1000);
     if (!mounted) return;
 
     switch (result) {
       case Success(:final data):
         setState(() {
-          _doctorsByCategory[key] = data.data;
-          _loadingDoctors[key] = false;
+          _allDoctors = data.data;
+          _isLoadingDoctors = false;
         });
       case Failure(:final exception):
         setState(() {
-          _doctorsByCategory[key] = [];
-          _loadingDoctors[key] = false;
-          _doctorErrors[key] = exception.message;
+          _allDoctors = [];
+          _isLoadingDoctors = false;
+          _doctorsError = exception.message;
         });
     }
+  }
+
+  List<DoctorApiModel> _doctorsForCategory(DoctorCategory category) {
+    if (category.id == 0) return _allDoctors;
+    return _allDoctors
+        .where((doctor) => doctor.categoryId == category.id)
+        .toList();
   }
 
   @override
@@ -165,8 +163,9 @@ class _DoctorsListPageState extends State<DoctorsListPage>
                     tabs: _categories.map((category) {
                       final categoryIndex = _categories.indexOf(category);
                       final isSelected = _currentTabIndex == categoryIndex;
-                      final key = _categoryKey(category);
-                      final count = _doctorsByCategory[key]?.length ?? 0;
+                      final count =
+                          category.doctorsCount ??
+                          _doctorsForCategory(category).length;
                       return Tab(
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -224,24 +223,17 @@ class _DoctorsListPageState extends State<DoctorsListPage>
     if (_tabController == null) {
       return const SizedBox.shrink();
     }
+    if (_isLoadingDoctors) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_doctorsError != null) {
+      return _buildErrorState(_doctorsError!, _loadAllDoctors);
+    }
     return TabBarView(
       controller: _tabController!,
       children: _categories.map((category) {
-        final key = _categoryKey(category);
-        final isLoading = _loadingDoctors[key] == true;
-        final error = _doctorErrors[key];
-        final doctors = _doctorsByCategory[key];
-
-        if (isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (error != null) {
-          return _buildErrorState(
-            error,
-            () => _loadDoctorsForCategory(category),
-          );
-        }
-        if (doctors == null || doctors.isEmpty) {
+        final doctors = _doctorsForCategory(category);
+        if (doctors.isEmpty) {
           return _buildEmptyState();
         }
         return _buildDoctorGrid(doctors);

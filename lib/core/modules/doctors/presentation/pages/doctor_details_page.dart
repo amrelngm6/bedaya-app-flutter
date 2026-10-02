@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:bedaya2/core/theme/colors.dart';
 import 'package:bedaya2/core/theme/styles.dart';
 import 'package:bedaya2/core/modules/doctors/models/doctor_model.dart';
-import 'package:html2md/html2md.dart' as html2md;
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 class DoctorDetailsPage extends StatefulWidget {
   final DoctorApiModel doctor;
@@ -148,11 +148,8 @@ class _DoctorDetailsPageState extends State<DoctorDetailsPage> {
             // 4. About Doctor
             Text("About Doctor".tr(), style: AppStyles.h2),
             const SizedBox(height: 8),
-            Text(
-              html2md.convert(
-                "${(context.locale == Locale('ar') ? doc.bioArabic : doc.bio)}",
-              ),
-              style: AppStyles.bodyMedium.copyWith(height: 1.5),
+            HtmlWidget(
+              "${(context.locale == Locale('ar') ? doc.bioArabic : doc.bio)}",
             ),
             const SizedBox(height: 24),
 
@@ -333,7 +330,10 @@ class _DoctorDetailsPageState extends State<DoctorDetailsPage> {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(doc.name.tr(), style: AppStyles.h3),
+              Text(
+                Locale('ar') == context.locale ? doc.arabicName : doc.name,
+                style: AppStyles.h3,
+              ),
               const SizedBox(height: 4),
               Text('Specialist'.tr(), style: AppStyles.bodySmall),
               const SizedBox(height: 8),

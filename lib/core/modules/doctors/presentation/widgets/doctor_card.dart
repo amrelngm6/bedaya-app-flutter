@@ -7,7 +7,6 @@ import 'package:bedaya2/core/modules/doctors/presentation/pages/doctor_details_p
 import 'package:bedaya2/core/modules/doctors/models/doctor_model.dart';
 
 import 'package:bedaya2/core/modules/bookings/presentation/pages/booking_appointment_page.dart';
-import 'package:html2md/html2md.dart' as html2md;
 
 // ignore: must_be_immutable
 class DoctorCard extends StatelessWidget {
@@ -108,19 +107,6 @@ class DoctorCard extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
-                      if (doctor.bio != null && doctor.bio!.isNotEmpty) ...[
-                        Text(
-                          html2md.convert(
-                            context.locale == Locale('ar')
-                                ? doctor.bioArabic!
-                                : doctor.bio!,
-                          ),
-                          style: AppStyles.bodySmall,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
                     ],
                   ),
                 ),

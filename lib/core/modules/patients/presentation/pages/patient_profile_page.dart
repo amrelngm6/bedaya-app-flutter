@@ -12,6 +12,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../theme/colors.dart';
 import '../../../../theme/styles.dart';
 import 'medical_condition_details_page.dart';
@@ -218,6 +219,14 @@ class _PatientProfilePageState extends State<PatientProfilePage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Patient QR Code Card
+          _buildSectionCard(
+            title: "Patient QR Code".tr(),
+            icon: Icons.qr_code,
+            children: [_buildQrCodeSection()],
+          ),
+          const SizedBox(height: 16),
+
           // Contact Information Card
           _buildSectionCard(
             title: "Contact Information".tr(),
@@ -354,6 +363,30 @@ class _PatientProfilePageState extends State<PatientProfilePage>
             ...children,
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildQrCodeSection() {
+    return Center(
+      child: Column(
+        children: [
+          QrImageView(
+            data: patient.id.toString(),
+            version: QrVersions.auto,
+            size: 180,
+            backgroundColor: Colors.white,
+            errorStateBuilder: (context, error) {
+              return SizedBox(
+                width: 180,
+                height: 180,
+                child: Center(
+                  child: Text('QR Code Error'.tr(), style: AppStyles.bodySmall),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

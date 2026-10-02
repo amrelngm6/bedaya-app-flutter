@@ -18,6 +18,8 @@ import 'package:bedaya2/core/modules/medication/services/medication_reminder_ser
 import 'package:bedaya2/core/modules/videos/services/video_service.dart';
 import 'package:bedaya2/core/modules/ai/services/medical_report_service.dart';
 import 'package:bedaya2/core/modules/invoices/services/invoices_service.dart';
+import 'package:bedaya2/core/modules/offers/services/offer_service.dart';
+import 'package:bedaya2/core/modules/loyalty/services/loyalty_service.dart';
 
 /// Application-wide dependency injection container.
 ///
@@ -60,6 +62,8 @@ class ServiceLocator {
   late final AIMedicalChatService aiMedicalChat;
   late final InvoicesService invoices;
   late final PaymobApiService paymob;
+  late final OfferService offers;
+  late final LoyaltyService loyalty;
 
   /// Must be called once before any service is accessed.
   Future<void> initialize() async {
@@ -94,6 +98,8 @@ class ServiceLocator {
     aiMedicalChat = AIMedicalChatService(apiClient);
     invoices = InvoicesService(apiClient);
     paymob = PaymobApiService(apiClient);
+    offers = OfferService(apiClient);
+    loyalty = LoyaltyService(apiClient);
 
     _initialized = true;
   }

@@ -206,12 +206,7 @@ class _DoctorsSliderState extends State<DoctorsSlider> {
           _filteredDoctors.isEmpty
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 32),
-                  child: Center(
-                    child: Text(
-                      'no_doctors_available'.tr(),
-                      style: AppStyles.bodySmall,
-                    ),
-                  ),
+                  child: Center(child: Text('', style: AppStyles.bodySmall)),
                 )
               : SingleChildScrollView(
                   scrollDirection: Axis.horizontal,

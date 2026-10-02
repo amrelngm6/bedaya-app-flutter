@@ -8,8 +8,7 @@ import 'package:bedaya2/presentation/widgets/success_story_card.dart';
 import 'package:bedaya2/core/modules/videos/presentation/widgets/video_player_widget.dart';
 // import 'package:bedaya2/presentation/widgets/photo_gallery_widget.dart';
 import 'package:bedaya2/core/modules/services/presentation/widgets/service_feature_card.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:html2md/html2md.dart' as html2md;
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 class ServiceDetailsPage extends StatefulWidget {
   final HospitalServiceApiModel service;
@@ -290,49 +289,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage>
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: MarkdownBody(
-        data: html2md.convert(widget.service.descriptionLocalized(context)),
-
-        styleSheet: MarkdownStyleSheet(
-          p: AppStyles.bodyLarge.copyWith(
-            height: 1.8,
-            fontSize: 14,
-            color: const Color(0xFF2C3E50),
-          ),
-          h1: AppStyles.h1.copyWith(
-            fontSize: 20,
-            height: 1.4,
-            color: AppColors.textPrimary,
-          ),
-          h2: AppStyles.h2.copyWith(
-            fontSize: 18,
-            height: 1.4,
-            color: AppColors.textPrimary,
-          ),
-          h3: AppStyles.h3.copyWith(
-            fontSize: 18,
-            height: 1.4,
-            color: AppColors.textPrimary,
-          ),
-          listBullet: AppStyles.bodyLarge.copyWith(
-            color: AppColors.primaryTeal,
-          ),
-          listIndent: 20,
-          blockquotePadding: const EdgeInsets.all(16),
-          blockquoteDecoration: BoxDecoration(
-            color: AppColors.lightBlueBackground,
-            borderRadius: BorderRadius.circular(8),
-            border: Border(
-              left: BorderSide(color: AppColors.primaryTeal, width: 4),
-            ),
-          ),
-        ),
-        // Limit to 100 characters
-        // style: AppStyles.bodyMedium.copyWith(
-        //   color: Colors.blueGrey,
-        //   fontSize: 14,
-        // ),
-      ),
+      child: HtmlWidget(widget.service.descriptionLocalized(context)),
     );
   }
 

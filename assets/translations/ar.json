@@ -60,6 +60,10 @@
   "infertility_in_men": "العقم عند الرجال",
   "minimal_access": "جراحة طفيفة التوغل",
   "ivf": "أطفال الأنابيب",
+  "Immunology": "المناعة",
+  "Endocrinology": "الغدد الصماء",
+  "Urology": "جراحة المسالك البولية",
+  "Pediatrics": "طب الأطفال",
   "AI-Powered Fertility Consultant": "مستشار الخصوبة المدعوم بالذكاء الاصطناعي",
   "Get instant answers to your fertility questions with our intelligent AI chatbot, available 24/7": "احصل على إجابات فورية لأسئلتك حول الخصوبة مع روبوت الدردشة الذكي الخاص بنا، المتاح على مدار الساعة طوال أيام الأسبوع",
   "Instant medical guidance": "إرشادات طبية فورية",
@@ -718,7 +722,7 @@
   "gender selection": "تحديد نوع الجنين",
   "Embryo Freezing": "تجميد الأجنة",
   "Assisted Hatching": "ثقب جدار الأجنة",
-  "Infertility": "العقم",
+  "Infertility": "أمراض النساء",
   "bedaya_hospital_tagline": "مستشفى بداية - للخصوبة وأطفال الانابيب",
   "Prof. Ismail AbolFotouh": "الأستاذ الدكتور إسماعيل أبو الفتوح",
   "booking_status_Pending": "قيد الانتظار",
@@ -761,7 +765,17 @@
   "Delete Account Confirmation": "تأكيد حذف الحساب",
   "An error occurred": "حدث خطأ",
   "Account deleted successfully, Your information will be removed from our servers within 30 days.": "تم حذف الحساب بنجاح، سيتم إزالة معلوماتك من خوادمنا خلال 30 يومًا.",
-  "Account deletion failed, please try again later.": "فشل حذف الحساب، يرجى المحاولة مرة أخرى لاحقًا."
+  "Account deletion failed, please try again later.": "فشل حذف الحساب، يرجى المحاولة مرة أخرى لاحقًا.",
 
-
+  "available_offers": "العروض المتاحة",
+  "no_offers_available": "لا توجد عروض متاحة",
+  "offer_points_value": "{} نقطة",
+  "offer_expires_on": "تنتهي في {}",
+  "offer_expired": "منتهية الصلاحية",
+  "loyalty_points_balance": "رصيد النقاط",
+  "loyalty_view_transactions": "عرض المعاملات",
+  "loyalty_transactions_history": "سجل المعاملات",
+  "no_transactions_yet": "لا توجد معاملات بعد",
+  "loyalty_points_earned": "نقاط مكتسبة",
+  "loyalty_points_redeemed": "نقاط مستبدلة"
 }

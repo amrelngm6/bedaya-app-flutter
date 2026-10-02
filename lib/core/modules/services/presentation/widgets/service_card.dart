@@ -2,7 +2,7 @@ import 'package:bedaya2/core/modules/services/models/hospital_service_model.dart
 import 'package:bedaya2/core/theme/styles.dart';
 import 'package:bedaya2/core/modules/services/presentation/pages/service_details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:html2md/html2md.dart' as html2md;
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 class ServiceCard extends StatelessWidget {
   final String label;
@@ -115,14 +115,8 @@ class ServiceCard extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 282,
-                    child: Text(
-                      html2md.convert(
-                        service.shortDescription(context, maxLength: 100),
-                      ), // Limit to 100 characters
-                      style: AppStyles.bodyMedium.copyWith(
-                        color: Colors.blueGrey,
-                        fontSize: 14,
-                      ),
+                    child: HtmlWidget(
+                      service.shortDescription(context, maxLength: 100),
                     ),
                   ),
                 ],

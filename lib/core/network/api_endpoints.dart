@@ -88,6 +88,14 @@ abstract final class ApiEndpoints {
   static const String patientReports = '/patient/reports';
   static String patientReportById(Object id) => '/patient/reports/$id';
 
+  // ─── Offers ────────────────────────────────────────────────────────────────
+  static const String offers = '/offers';
+  static String offerById(Object id) => '/offers/$id';
+
+  // ─── Loyalty ────────────────────────────────────────────────────────────────
+  static const String loyaltyPoints = '/loyalty';
+  static const String loyaltyTransactions = '/loyalty/transactions';
+
   // ─── Medical Profile (Conditions) ────────────────────────────────────────
   static const String medicalProfileConditions = '/medical-conditions';
   static String medicalProfileConditionById(Object id) =>

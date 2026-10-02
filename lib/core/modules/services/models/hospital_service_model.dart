@@ -122,9 +122,12 @@ class HospitalServiceApiModel {
       context.locale == const Locale('ar') ? arabicDescription : description;
 
   String shortDescription(BuildContext context, {int maxLength = 100}) {
-    final descriptionText = context.locale == const Locale('ar')
+    final _descriptionText = context.locale == const Locale('ar')
         ? arabicDescriptionText
         : this.descriptionText;
+
+    // Extract text from html.
+    final descriptionText = _descriptionText.replaceAll(RegExp(r'<[^>]*>'), '');
 
     return descriptionText.substring(
           0,

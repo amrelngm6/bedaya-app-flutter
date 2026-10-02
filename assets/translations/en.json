@@ -543,5 +543,17 @@
   "condition_status_active": "Active",
   "condition_status_resolved": "Resolved",
   "condition_status_chronic": "Chronic",
-  "condition_status_monitoring": "Monitoring"
+  "condition_status_monitoring": "Monitoring",
+
+  "available_offers": "Available Offers",
+  "no_offers_available": "No offers available",
+  "offer_points_value": "{} pts",
+  "offer_expires_on": "Expires on {}",
+  "offer_expired": "Expired",
+  "loyalty_points_balance": "Points Balance",
+  "loyalty_view_transactions": "View Transactions",
+  "loyalty_transactions_history": "Transactions History",
+  "no_transactions_yet": "No transactions yet",
+  "loyalty_points_earned": "Points Earned",
+  "loyalty_points_redeemed": "Points Redeemed"
 }
