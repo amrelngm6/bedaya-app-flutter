@@ -115,18 +115,18 @@ class _MedicationsListPageState extends State<MedicationsListPage>
           'Pill Reminder'.tr(),
           style: AppStyles.h2.copyWith(color: Colors.white),
         ),
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.white,
-          indicatorWeight: 3,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          tabs: [
-            Tab(text: 'My Meds'.tr()),
-            // Tab(text: 'Presc'.tr()),
-            // Tab(text: 'My Meds'.tr()),
-          ],
-        ),
+        // bottom: TabBar(
+        //   controller: _tabController,
+        //   indicatorColor: Colors.white,
+        //   indicatorWeight: 3,
+        //   labelColor: Colors.white,
+        //   unselectedLabelColor: Colors.white70,
+        //   tabs: [
+        //     Tab(text: 'My Meds'.tr()),
+        //     // Tab(text: 'Presc'.tr()),
+        //     // Tab(text: 'My Meds'.tr()),
+        //   ],
+        // ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -231,7 +231,7 @@ class _MedicationsListPageState extends State<MedicationsListPage>
               const Icon(Icons.access_time, color: Colors.white, size: 24),
               const SizedBox(width: 8),
               Text(
-                "${'Upcoming Medications'.tr()} (${todaysReminders.length})",
+                "${'Upcoming Notifications'.tr()} (${todaysReminders.length})",
                 style: AppStyles.h3.copyWith(color: Colors.white),
               ),
             ],
@@ -242,39 +242,52 @@ class _MedicationsListPageState extends State<MedicationsListPage>
             final reminder = reminderData['reminder'] as ReminderTime;
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          MedicationDetailsPage(medication: medication),
                     ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      '${reminder.time.hour.toString().padLeft(2, '0')}:${reminder.time.minute.toString().padLeft(2, '0')}',
-                      style: AppStyles.bodyMedium.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                  );
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '${reminder.time.hour.toString().padLeft(2, '0')}:${reminder.time.minute.toString().padLeft(2, '0')}',
+                        style: AppStyles.bodyMedium.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      medication.name,
-                      style: AppStyles.bodyMedium.copyWith(color: Colors.white),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        medication.name,
+                        style: AppStyles.bodyMedium.copyWith(
+                          color: Colors.white,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                  Text(
-                    medication.type.icon,
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                ],
+                    Text(
+                      medication.type.icon,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
               ),
             );
           }),
