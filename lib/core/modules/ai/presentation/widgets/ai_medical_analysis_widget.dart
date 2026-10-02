@@ -34,6 +34,7 @@ class _AIMedicalAnalysisView extends StatefulWidget {
 class _AIMedicalAnalysisViewState extends State<_AIMedicalAnalysisView> {
   AnalysisType? _selectedAnalysisType;
   final Map<String, TextEditingController> _parameterControllers = {};
+  bool allowFileScan = false;
   bool _isScanning = false;
   bool _hasScannedImage = false;
   final ImagePicker _picker = ImagePicker();
@@ -422,7 +423,7 @@ class _AIMedicalAnalysisViewState extends State<_AIMedicalAnalysisView> {
             _buildAnalysisTypeSelector(testsData),
             const SizedBox(height: 24),
             if (_selectedAnalysisType != null) ...[
-              _buildScanButton(),
+              allowFileScan ? _buildScanButton() : SizedBox(),
               const SizedBox(height: 16),
               if (_hasScannedImage)
                 _buildScannedValuesSummary()
