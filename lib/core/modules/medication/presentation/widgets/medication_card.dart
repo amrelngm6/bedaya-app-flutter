@@ -96,21 +96,30 @@ class MedicationCard extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              if (medication.dosage != null) ...[
-                                const SizedBox(width: 8),
-                                Text(
-                                  medication.dosage!,
-                                  style: AppStyles.bodySmall,
-                                ),
-                              ],
                             ],
                           ),
                         ],
                       ),
                     ),
+                  ],
+                ),
 
-                    // Prescribed badge
-                    if (medication.prescribedByDoctor)
+                // Divider
+                Container(
+                  height: 1,
+                  color: AppColors.greyOutline.withValues(alpha: 0.3),
+                ),
+
+                // Prescribed badge
+                if (medication.prescribedByDoctor)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (medication.dosage != null) ...[
+                        Text(medication.dosage!, style: AppStyles.bodySmall),
+                        const SizedBox(height: 8),
+                      ],
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -123,16 +132,8 @@ class MedicationCard extends StatelessWidget {
                           size: 20,
                         ),
                       ),
-                  ],
-                ),
-
-                const SizedBox(height: 16),
-
-                // Divider
-                Container(
-                  height: 1,
-                  color: AppColors.greyOutline.withValues(alpha: 0.3),
-                ),
+                    ],
+                  ),
 
                 const SizedBox(height: 12),
 

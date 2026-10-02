@@ -1,5 +1,6 @@
 import 'package:bedaya2/core/modules/services/models/hospital_service_model.dart';
 import 'package:flutter/material.dart';
+import 'package:bedaya2/core/modules/videos/presentation/widgets/video_player_widget.dart';
 import 'package:bedaya2/core/theme/colors.dart';
 import 'package:bedaya2/core/theme/styles.dart';
 
@@ -8,8 +9,28 @@ class SuccessStoryCard extends StatelessWidget {
 
   const SuccessStoryCard({super.key, required this.story});
 
+  void _openVideo(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => VideoPlayerWidget(
+          videoUrl: story.videoUrl!,
+          title: story.patientName,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final hasVideo = story.videoUrl != null && story.videoUrl!.isNotEmpty;
+    return GestureDetector(
+      onTap: hasVideo ? () => _openVideo(context) : null,
+      child: _buildCard(),
+    );
+  }
+
+  Widget _buildCard() {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
@@ -68,18 +89,6 @@ class SuccessStoryCard extends StatelessWidget {
                             ),
                             const SizedBox(width: 12),
                           ],
-                          if (story.year != null) ...[
-                            Icon(
-                              Icons.calendar_today,
-                              size: 14,
-                              color: AppColors.textSecondary,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              story.year.toString(),
-                              style: AppStyles.bodySmall,
-                            ),
-                          ],
                         ],
                       ),
                     ],
@@ -128,14 +137,34 @@ class SuccessStoryCard extends StatelessWidget {
                 // Rating row
                 const SizedBox(height: 12),
                 Row(
-                  children: List.generate(
-                    5,
-                    (i) => Icon(
-                      i < story.rating.round() ? Icons.star : Icons.star_border,
-                      size: 16,
-                      color: AppColors.ratingGold,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: List.generate(
+                        5,
+                        (i) => Icon(
+                          i < int.parse(story.rating)
+                              ? Icons.star
+                              : Icons.star_border,
+                          size: 16,
+                          color: AppColors.ratingGold,
+                        ),
+                      ),
                     ),
-                  ),
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryPurple,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.play_arrow,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

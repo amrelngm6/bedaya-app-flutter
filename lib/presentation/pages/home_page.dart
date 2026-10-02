@@ -360,6 +360,7 @@ class _HomePageState extends State<HomePage> {
 
       try {
         await sl.pushNotifications.initialize();
+        await sl.medicationReminders.requestPermissions();
       } catch (e) {
         // Handle registration error (e.g., log it)
         debugPrint('Failed to register device token: $e');

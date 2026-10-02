@@ -105,12 +105,12 @@ class HospitalServiceApiModel {
               .map(ServiceVideoApiModel.fromJson)
               .toList() ??
           [],
-      // successStories:
-      //     (json['success_stories'] as List<dynamic>?)
-      //         ?.whereType<Map<String, dynamic>>()
-      //         .map(SuccessStoryApiModel.fromJson)
-      //         .toList() ??
-      //     [],
+      successStories:
+          (json['success_stories'] as List<dynamic>?)
+              ?.whereType<Map<String, dynamic>>()
+              .map(SuccessStoryApiModel.fromJson)
+              .toList() ??
+          [],
       isHighlighted: json['is_highlighted'] as bool? ?? false,
     );
   }
@@ -160,37 +160,32 @@ class ServiceVideoApiModel {
         title: json['title'] as String? ?? '',
         videoUrl: json['video_url'] as String? ?? '',
         thumbnailUrl: json['thumbnail_url'] as String?,
-        durationSeconds: json['duration'] as int?,
+        durationSeconds: int.tryParse(json['duration'] as String? ?? ''),
       );
 }
 
 class SuccessStoryApiModel {
   const SuccessStoryApiModel({
-    required this.id,
     required this.patientName,
     required this.story,
     required this.rating,
     this.patientImageUrl,
+    this.videoUrl,
     this.serviceUsed,
-    this.year,
   });
 
-  final int id;
   final String patientName;
   final String story;
-  final double rating;
+  final String rating;
   final String? patientImageUrl;
+  final String? videoUrl;
   final String? serviceUsed;
-  final int? year;
 
   factory SuccessStoryApiModel.fromJson(Map<String, dynamic> json) =>
       SuccessStoryApiModel(
-        id: json['id'] as int,
-        patientName: json['patient_name'] as String? ?? '',
+        patientName: json['name'] as String? ?? '',
         story: json['story'] as String? ?? '',
-        rating: (json['rating'] as num?)?.toDouble() ?? 5.0,
-        patientImageUrl: json['patient_image_url'] as String?,
-        serviceUsed: json['service_used'] as String?,
-        year: json['year'] as int?,
+        rating: json['rating'] as String? ?? '5.0',
+        videoUrl: json['video_url'] as String?,
       );
 }

@@ -95,6 +95,13 @@ class AuthCubit extends Cubit<AuthState> {
 
   // ─── Login ────────────────────────────────────────────────────────────────
 
+  Future<void> _setupNotifications() async {
+    try {
+      await sl.pushNotifications.initialize();
+      await sl.medicationReminders.requestPermissions();
+    } catch (_) {}
+  }
+
   Future<void> login({
     required String phone,
     required String password,
@@ -108,10 +115,11 @@ class AuthCubit extends Cubit<AuthState> {
     switch (result) {
       case Success(:final data):
         emit(AuthAuthenticated(data.user));
-        // await handleResponse.call();
+        _setupNotifications();
+      // await handleResponse.call();
       case Failure(:final exception):
         emit(AuthFailure(exception.message));
-        // await handleError?.call();
+      // await handleError?.call();
     }
   }
 

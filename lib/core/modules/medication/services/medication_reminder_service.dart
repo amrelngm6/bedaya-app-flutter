@@ -60,32 +60,14 @@ class MedicationReminderService {
       tz.setLocalLocation(tz.UTC);
     }
 
-    // Also request the notification permission at scheduling time (in case the
-    // user skipped the home-page prompt).
-    final androidImpl = _local
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
-    await androidImpl?.requestNotificationsPermission();
-
-    // On Android 12 (API 31-32), SCHEDULE_EXACT_ALARM requires an explicit
-    // user grant via the system settings page.  Without it the service falls
-    // back to inexact alarms, which OEM power-saving can delay by hours.
-    // canScheduleExactNotifications returns true on API 33+ when
-    // USE_EXACT_ALARM is declared, so this prompt only appears on API 31-32.
-    final canExact = await androidImpl?.canScheduleExactNotifications();
-    if (canExact == false) {
-      await androidImpl?.requestExactAlarmsPermission();
-    }
-
     // Initialise the plugin (tap routing is handled by PushNotificationService).
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     );
     const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
+      requestAlertPermission: false,
       requestBadgePermission: false,
-      requestSoundPermission: true,
+      requestSoundPermission: false,
     );
     await _local.initialize(
       settings: const InitializationSettings(
@@ -105,6 +87,27 @@ class MedicationReminderService {
   }
 
   // ─── Public API ───────────────────────────────────────────────────────────
+
+  /// Requests notification / exact-alarm permissions; call only after login.
+  Future<void> requestPermissions() async {
+    final androidImpl = _local
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    await androidImpl?.requestNotificationsPermission();
+
+    // Only prompts on Android 12 (API 31-32); otherwise returns true.
+    final canExact = await androidImpl?.canScheduleExactNotifications();
+    if (canExact == false) {
+      await androidImpl?.requestExactAlarmsPermission();
+    }
+
+    await _local
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >()
+        ?.requestPermissions(alert: true, sound: true);
+  }
 
   /// Cancels any existing reminders for [medication] then schedules a new
   /// daily notification for every [ReminderTime] in the medication's list.

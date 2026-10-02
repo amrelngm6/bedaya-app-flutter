@@ -79,8 +79,12 @@ class PushNotificationService {
 
   // ─── Public API ───────────────────────────────────────────────────────────
 
-  /// Call once after [Firebase.initializeApp].
+  bool _initialized = false;
+
+  /// Call only for a logged-in user; asks for notification permission.
   Future<bool?> initialize() async {
+    if (_initialized) return true;
+    _initialized = true;
     await _requestPermissions();
     await _initLocalNotifications();
     await _createAndroidChannel();
